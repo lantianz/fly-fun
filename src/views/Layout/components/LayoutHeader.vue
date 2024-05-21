@@ -2,11 +2,10 @@
 import { useScroll } from '@vueuse/core'
 
 const { y } = useScroll(window)
-const width = document.documentElement.clientWidth
 </script>
 
 <template>
-    <header class="app-header" :class="{ show: y > 90 }" :style="{ width: width + 'px' }">
+    <header class="app-header" :class="{ show: y > 90 }">
         <div class="container">
             <h1 class="logo">
                 <RouterLink to="/">Fly Fun</RouterLink>
@@ -44,17 +43,17 @@ const width = document.documentElement.clientWidth
 
 
 <style scoped lang='scss'>
-
 .app-header {
+    width: 100vw;
     background-color: $blackBgColor;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 999;
+    box-shadow: rgb(0, 0, 0) 0px 0px 20px;
 
     &.show {
         background-color: $whiteBgColor;
-        border-bottom: 1px solid #e4e4e4;
-        position: fixed;
-        left: 0;
-        top: 0;
-        z-index: 999;
         transition: all 0.3s linear;
 
         .logo a {
@@ -136,8 +135,8 @@ const width = document.documentElement.clientWidth
                 height: 100%;
                 padding-left: 12px;
                 border-radius: 40px;
-                color: #999999;
-                background: #ffffff;
+                color: #66666622;
+                background: #ffffff66;
             }
 
             .btn-search {

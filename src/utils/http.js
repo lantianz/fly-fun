@@ -3,7 +3,7 @@ import axios from 'axios'
 // 创建axios实例
 const http = axios.create({
   baseURL: 'http://101.42.141.9:8002',
-  timeout: 5000
+  timeout: 10000
 })
 
 // axios请求拦截器

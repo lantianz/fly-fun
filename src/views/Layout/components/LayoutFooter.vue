@@ -24,8 +24,9 @@
   
   <style scoped lang='scss'>
   .app_footer {
-    overflow: hidden;
+    width: 100vw;
     background-color: #f5f5f5;
+    margin-top: 50px;
     padding-top: 20px;
   
     .extra {

@@ -1,7 +1,7 @@
 import http from '@/utils/http'
 
-export function getIndexAPI () {
+export function getAPI () {
     return http({
-      url: '/api/getIndex'
+      url: '/api'
     })
   }
