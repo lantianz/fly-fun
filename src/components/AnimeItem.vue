@@ -5,7 +5,7 @@ const { anime, clickEvent } = defineProps(['anime', 'clickEvent'])
 
 <template>
     <div class="anime-item" @click="clickEvent(anime.url)">
-        <el-image :src="anime.img" :lazy="true">
+        <el-image v-if="anime.img" :src="anime.img" :lazy="true">
             <template #placeholder>
                 <div class="load">
                     <div class="loader"></div>

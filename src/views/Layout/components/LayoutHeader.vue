@@ -1,21 +1,28 @@
 <script setup>
 import { ref } from 'vue'
 import { useScroll } from '@vueuse/core'
-import { getSearchAPI } from '@/apis/home'
+import { useHomeStore } from '@/stores/home';
+import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router';
+const homeStore = useHomeStore()
+const { tagObj } = storeToRefs(homeStore)
 
 const { y } = useScroll(window)
 
+const router = useRouter()
+const open = (url) => {
+    router.push({ path: '/More/' + url })
+}
+// 搜索
 const form = ref({
     keyword: '',
-    page: 1,
+    page: 1,    //搜索结果从第一页开始
 });
-const search = async () => {
-    const res = await getSearchAPI(form.value);
-    console.log("搜索结果:", res.data);
-};
 const onSubmit = () => {
-    search();
+    if (form.value.keyword.trim() === '') return;
+    router.push({ path: '/Search', query: form.value })
 };
+// logo刷新
 const refresh = () => {
     location.replace('/');
 }
@@ -28,15 +35,18 @@ const refresh = () => {
                 <a @click="refresh">Fly Fun</a>
             </h1>
             <ul class="app-header-nav">
-                <li class="home">
+                <li>
                     <RouterLink to="/"><i class="iconfont icon-dianshi"></i>&nbsp;首页</RouterLink>
+                </li>
+                <li v-for="tag in tagObj.tags" :key="tag" @click="open(tag.url)">
+                    <a>{{ tag.title }}</a>
                 </li>
             </ul>
             <div class="search">
                 <el-form :model="form" @submit.prevent="onSubmit">
                     <el-form-item>
                         <input type="text" v-model="form.keyword" placeholder="请输入您要搜索的内容...">
-                        <el-button class="btn-search" type="primary" @click="search"><i
+                        <el-button class="btn-search" type="primary" @click="onSubmit"><i
                                 class="iconfont icon-sousuo"></i>&nbsp;搜索</el-button>
                     </el-form-item>
                 </el-form>
@@ -44,9 +54,13 @@ const refresh = () => {
             <!-- <div class="history">
                 <RouterLink to="/history"><i class="iconfont icon-lishi"></i></RouterLink>
             </div> -->
-            <div class="avatar">
-                <el-avatar src="src/assets/images/avatar.jpg" />
-            </div>
+            <el-popover placement="top-start" :width="250" trigger="hover" content="别点了，我还没做这个┗( ▔, ▔ )┛">
+                <template #reference>
+                    <div class="avatar">
+                        <el-avatar src="src/assets/images/avatar.jpg" />
+                    </div>
+                </template>
+            </el-popover>
         </div>
     </header>
 </template>
@@ -109,7 +123,7 @@ const refresh = () => {
         display: flex;
 
         li {
-            margin-left: 36px;
+            margin-left: 20px;
             text-align: center;
 
             .iconfont {
@@ -189,6 +203,7 @@ const refresh = () => {
         height: 40px;
         border-radius: 40px;
         margin-left: 30px;
+        cursor: pointer;
     }
 }
 </style>

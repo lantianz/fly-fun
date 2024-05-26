@@ -1,6 +1,8 @@
 <script setup>
-import { onMounted, ref } from 'vue';
-const { lineNum, lineCount, animeObj } = defineProps(['lineNum', 'lineCount', 'animeObj'])
+import { ref, toRefs, watchEffect } from 'vue';
+const props = defineProps(['lineNum', 'lineCount', 'aObj'])
+
+const { lineNum, lineCount, aObj } = toRefs(props)
 
 const isNull = (val) => {
     if (val == null || val == undefined || val == "") {
@@ -9,18 +11,16 @@ const isNull = (val) => {
     return false
 }
 
-let lineNumD = 2
-let lineCountD = 6
-lineNumD = isNull(lineNum) ? 2 : lineNum
-lineCountD = isNull(lineCount) ? 6 : lineCount
+const lineNumD = isNull(lineNum.value) ? 1 : lineNum.value  // 有几行
+const lineCountD = isNull(lineCount.value) ? 6 : lineCount.value    // 每行显示的个数
 
 const pageIndex = ref(0)
-const animes = ref([])
+const data = ref([])
 const group = () => {
     let index = 0;
     const newArray = [];
-    while (index < animeObj.items.length) {
-        newArray.push(animeObj.items.slice(index, index += (lineCountD * lineNumD)));
+    while (index < aObj.value.items.length) {
+        newArray.push(aObj.value.items.slice(index, index += (lineCountD * lineNumD)));
     }
     return newArray;
 }
@@ -29,33 +29,32 @@ const before = () => {
     if (pageIndex.value < 1) {
         return
     }
-    animes.value = group()[pageIndex.value - 1]
+    data.value = group()[pageIndex.value - 1]
     pageIndex.value -= 1
 }
 const after = () => {
-    if (pageIndex.value >= Math.ceil(animeObj.items.length / (lineCountD * lineNumD)) - 1) {
+    if (pageIndex.value >= Math.ceil(aObj.value.items.length / (lineCountD * lineNumD)) - 1) {
         return
     }
-    animes.value = group()[pageIndex.value + 1]
+    data.value = group()[pageIndex.value + 1]
     pageIndex.value += 1
 }
-onMounted(() => {
-    animes.value = group()[pageIndex.value]
+
+watchEffect(() => {
+    data.value = group()[pageIndex.value]
 })
 
 defineExpose({
-    before,
-    after,
-    animes
+    data
 })
 </script>
 
 <template>
-    <div class="pager" v-if="animeObj.items.length > (lineCountD * lineNumD)">
+    <div class="pager">
         <a @click="before">&lt;</a>
         <span>{{ pageIndex + 1 }}</span>
         <span>&nbsp;/&nbsp;</span>
-        <span>{{ Math.ceil(animeObj.items.length / (lineCountD * lineNumD)) }}</span>
+        <span>{{ Math.ceil(aObj.items.length / (lineCountD * lineNumD)) }}</span>
         <a @click="after">&gt;</a>
     </div>
 </template>
@@ -63,6 +62,7 @@ defineExpose({
 <style scoped lang="scss">
 
     .pager {
+        width: fit-content;
         display: flex;
         align-items: center;
         justify-content: space-between;

@@ -16,11 +16,15 @@ const router = createRouter({
           component: () => import('@/views/Anime/index.vue')
         },
         {
-          path: 'Search/',
-          component: () => import('@/views/Search/index.vue')
+          path: 'More/:id',
+          component: () => import('@/views/Search/index.vue') //waiting
         },
       ]
-    }
+    },
+    {
+      path: '/Search',
+      component: () => import('@/views/Search/index.vue') //waiting
+    },
   ]
 })
 

@@ -1,10 +1,17 @@
 <script setup>
+import PageHandle from '@/components/PageHandle.vue';
 import AnimeItem from '@/components/AnimeItem.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, reactive, watchEffect } from 'vue';
 import { useRouter } from 'vue-router'
 import { getWeekAPI } from '@/apis/home'
 
 const week = ref([]);
+const sonRef = ref(null)
+const animes = ref([])
+// 初始化子组件传来的数据onMounted
+const init = () => watchEffect(() => {
+    animes.value = sonRef.value.data
+})
 
 const getWeek = async () => {
     try {
@@ -25,21 +32,23 @@ const getToday = () => {
 }
 const activeDay = ref(getToday())
 
-const animes = ref([])
+const aObj = reactive({
+    items: []
+})
 const selectDay = (index) => {
     activeDay.value = index
-    animes.value = week.value[activeDay.value].weekItems;
-
+    aObj.items = week.value[activeDay.value].weekItems;
 }
 
 onMounted(() => {
     getWeek().then((res) => {
         for (let i = 0; i < res.length; i++) {
             if (res[i].weekDay === activeDay.value) {
-                animes.value = res[i].weekItems;
+                aObj.items = res[i].weekItems;
             }
         }
     })
+    init()
 })
 
 const router = useRouter()
@@ -50,11 +59,13 @@ const goToAnime = (url) => {
 
 </script>
 
-<template>
+<template v-if="aObj.items">
     <div id="home-schedule" class="home-schedule">
-        <h1>本周更新</h1>
-        <el-divider />
-
+        <div class="title">
+            <h1>本周更新</h1>
+            <el-divider />
+            <PageHandle ref="sonRef" :lineNum="1" :aObj="aObj" />
+        </div>
         <div class="tabs">
             <el-button round v-for="(day, index) in days" :key="day" :class="{ active: activeDay === index }"
                 @click="selectDay(index)">
@@ -71,23 +82,29 @@ const goToAnime = (url) => {
 .home-schedule {
     padding: 30px;
 
-    h1 {
-        font-size: 40px;
-        margin-left: 30px;
-        display: inline-block;
-        color: $blackColor1;
-    }
+    .title {
+        display: flex;
+        align-items: center;
 
-    .el-divider {
-        margin: 0;
-        border-color: $xtxColor;
-        border-width: 3px;
+        h1 {
+            width: 240px;
+            font-size: 36px;
+            margin-left: 30px;
+            display: inline-block;
+            color: $blackColor1;
+        }
 
+        .el-divider {
+            margin: 0;
+            border-color: $xtxColor;
+            border-width: 3px;
+
+        }
     }
 }
 
 .tabs {
-    margin-top: 10px;
+    margin: 10px 0 0 30px;
     display: flex;
     gap: 10px;
 

@@ -28,6 +28,7 @@ onMounted(() => {
     <HomeSchedule />
     <HomeAnime v-for="anime in animeObj" :key="anime" :line-num="2" :animeObj="anime" :click-event="goToAnime" />
   </div>
+  <el-backtop :right="100" :bottom="100" />
 </template>
 
 <style scoped lang="scss">

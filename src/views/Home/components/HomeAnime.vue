@@ -1,8 +1,17 @@
 <script setup>
+import PageHandle from '@/components/PageHandle.vue';
 import AnimeItem from '@/components/AnimeItem.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router'
-const { lineNum, lineCount, animeObj, clickEvent } = defineProps(['lineNum', 'lineCount', 'animeObj', 'clickEvent'])
+const { lineNum, lineCount, animeObj, clickEvent } = defineProps([ 'lineNum', 'lineCount', 'animeObj', 'clickEvent'])
+
+
+const sonRef = ref(null)
+const animes = ref([])
+// 初始化子组件传来的数据onMounted
+const init = () => watchEffect(() => {
+    animes.value = sonRef.value.data
+})
 
 const router = useRouter()
 const getMore = (url) => {
@@ -10,45 +19,8 @@ const getMore = (url) => {
     console.log("获取更多:", url)
 }
 
-const isNull = (val) => {
-    if (val == null || val == undefined || val == "") {
-        return true
-    }
-    return false
-}
-
-let lineNumD = 2
-let lineCountD = 6
-lineNumD = isNull(lineNum) ? 2 : lineNum
-lineCountD = isNull(lineCount) ? 6 : lineCount
-
-const pageIndex = ref(0)
-const animes = ref([])
-const group = () => {
-    let index = 0;
-    const newArray = [];
-    while (index < animeObj.items.length) {
-        newArray.push(animeObj.items.slice(index, index += (lineCountD * lineNumD)));
-    }
-    return newArray;
-}
-
-const before = () => {
-    if (pageIndex.value < 1) {
-        return
-    }
-    animes.value = group()[pageIndex.value - 1]
-    pageIndex.value -= 1
-}
-const after = () => {
-    if (pageIndex.value >= Math.ceil(animeObj.items.length / (lineCountD * lineNumD)) - 1) {
-        return
-    }
-    animes.value = group()[pageIndex.value + 1]
-    pageIndex.value += 1
-}
 onMounted(() => {
-    animes.value = group()[pageIndex.value]
+    init()
 })
 </script>
 
@@ -60,13 +32,7 @@ onMounted(() => {
                 <a v-if="animeObj.hasMore" @click="getMore(animeObj.more)" class="more">更多</a>
             </div>
             <el-divider />
-            <div class="pager" v-if="animeObj.items.length > (lineCountD * lineNumD)">
-                <a @click="before">&lt;</a>
-                <span>{{ pageIndex + 1 }}</span>
-                <span>&nbsp;/&nbsp;</span>
-                <span>{{ Math.ceil(animeObj.items.length / (lineCountD * lineNumD)) }}</span>
-                <a @click="after">&gt;</a>
-            </div>
+            <PageHandle ref="sonRef" :lineNum="lineNum" :lineCount="lineCount" :aObj="animeObj" />
         </div>
         <div class="anime-list">
             <AnimeItem v-for="anime in animes" :key="anime" :anime="anime" :click-event="clickEvent" />
@@ -99,27 +65,6 @@ onMounted(() => {
             margin-right: 10px;
             font-weight: bold;
             color: #cccccc;
-            cursor: pointer;
-
-            &:hover {
-                color: $xtxColor;
-            }
-        }
-    }
-
-    .pager {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-left: 10px;
-        font-size: 16px;
-        font-weight: bold;
-        color: #cccccc;
-
-        a {
-            color: #cccccc;
-            font-size: 22px;
-            margin: 0 10px;
             cursor: pointer;
 
             &:hover {
