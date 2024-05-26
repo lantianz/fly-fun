@@ -1,7 +1,9 @@
 import http from "@/utils/http";
 
-export function getAnimeAPI(id) {
+export const getAnimeAPI = (params) => {
   return http({
-    url: `/api/getAnime/${id}`,
+    method: "get",
+    url: "/api/details/get",
+    params: params,
   });
 }

@@ -1,28 +1,43 @@
 <script setup>
-import { onMounted, ref } from 'vue';
-import { getIndexAPI } from '@/apis/home';
-const indexList = ref([])
-const getIndex = async () => {
-    const res = await getIndexAPI()
-    indexList.value = res.data.banner
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useHomeStore } from '@/stores/home';
+const homeStore = useHomeStore()
+
+const router = useRouter()
+const now = ref(0)
+const goToAnime = (index, url) => {
+    if(index === now.value){
+        router.push({ path: '/Anime' + url })
+    } else {
+        return
+    }
 }
-onMounted(() => {
-    getIndex()
-})
+const changeCarousel = (index) => {
+    now.value = index
+}
+
 </script>
 
 <template>
     <div class="home-banner">
-        <el-carousel arrow="never" :interval="4000" type="card" height="calc(100vh - 90px)">
-            <el-carousel-item v-for="item in indexList" :key="item">
-                <el-image class="banner-img" :src="item.cover" :lazy="true">
+        <el-carousel arrow="never" :interval="4000" type="card" height="calc(100vh - 90px)" @change="changeCarousel">
+            <el-carousel-item v-for="(item, index) in homeStore.bannerObj.items" :key="item" @click="goToAnime(index, item.url)">
+                <el-image class="banner-img" :src="item.img">
                     <template #placeholder>
-                        <div class="image-slot"><h1 class="dot">Loading...</h1></div>
+                        <div class="load">
+                            <div class="loader"></div>
+                        </div>
+                    </template>
+                    <template #error>
+                        <div class="load">
+                            <div class="loader"></div>
+                        </div>
                     </template>
                 </el-image>
                 <div class="banner-info">
                     <h1>{{ item.title }}</h1>
-                    <p>{{ item.title }}</p>
+                    <p>{{ item.episodes }}</p>
                 </div>
             </el-carousel-item>
         </el-carousel>
@@ -30,6 +45,8 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
+@import '@/styles/loader.scss';
+
 .home-banner {
     background: url('@/assets/images/logo-bg.png') no-repeat;
     background-size: contain;
@@ -42,25 +59,17 @@ onMounted(() => {
             border-radius: 20px;
         }
 
+        ::v-deep .el-carousel__button {
+            height: 20px;
+            border-radius: 20px;
+        }
+
         .banner-img {
             width: 100%;
             height: 100%;
             background-size: cover;
             background-position: center;
 
-            .image-slot {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 100%;
-                height: 100%;
-                background: #cccccccc;
-                font-size: 14px;
-            }
-
-            .dot {
-                color: #fff;
-            }
         }
 
         .banner-info {

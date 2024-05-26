@@ -5,7 +5,6 @@ import { useAnimeStore } from "@/stores/anime";
 import { onMounted } from 'vue';
 const animeStore = useAnimeStore()
 onMounted(() => {
-  scrollTo(0, 0)
   animeStore.getAnime()
 })
 </script>

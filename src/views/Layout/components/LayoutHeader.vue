@@ -1,41 +1,51 @@
 <script setup>
+import { ref } from 'vue'
 import { useScroll } from '@vueuse/core'
+import { getSearchAPI } from '@/apis/home'
 
 const { y } = useScroll(window)
+
+const form = ref({
+    keyword: '',
+    page: 1,
+});
+const search = async () => {
+    const res = await getSearchAPI(form.value);
+    console.log("搜索结果:", res.data);
+};
+const onSubmit = () => {
+    search();
+};
+const refresh = () => {
+    location.replace('/');
+}
 </script>
 
 <template>
     <header class="app-header" :class="{ show: y > 90 }">
         <div class="container">
             <h1 class="logo">
-                <RouterLink to="/">Fly Fun</RouterLink>
+                <a @click="refresh">Fly Fun</a>
             </h1>
             <ul class="app-header-nav">
                 <li class="home">
                     <RouterLink to="/"><i class="iconfont icon-dianshi"></i>&nbsp;首页</RouterLink>
                 </li>
-                <li>
-                    <RouterLink to="/"><i class="iconfont icon-paiban"></i>&nbsp;周番剧表</RouterLink>
-                </li>
-                <li>
-                    <RouterLink to="/"><i class="iconfont icon-riman"></i>&nbsp;完结日漫</RouterLink>
-                </li>
-                <li>
-                    <RouterLink to="/"><i class="iconfont icon-guoman"></i>&nbsp;热门国漫</RouterLink>
-                </li>
             </ul>
             <div class="search">
-                <form>
-                    <input type="text" placeholder="请输入您要搜索的内容...">
-                    <el-button class="btn-search" type="primary"><i
-                            class="iconfont icon-sousuo"></i>&nbsp;搜索</el-button>
-                </form>
+                <el-form :model="form" @submit.prevent="onSubmit">
+                    <el-form-item>
+                        <input type="text" v-model="form.keyword" placeholder="请输入您要搜索的内容...">
+                        <el-button class="btn-search" type="primary" @click="search"><i
+                                class="iconfont icon-sousuo"></i>&nbsp;搜索</el-button>
+                    </el-form-item>
+                </el-form>
             </div>
-            <div class="history">
+            <!-- <div class="history">
                 <RouterLink to="/history"><i class="iconfont icon-lishi"></i></RouterLink>
-            </div>
+            </div> -->
             <div class="avatar">
-                <RouterLink to="/profile"><el-avatar src="src/assets/images/avatar.jpg" /></RouterLink>
+                <el-avatar src="src/assets/images/avatar.jpg" />
             </div>
         </div>
     </header>
@@ -64,7 +74,8 @@ const { y } = useScroll(window)
             color: $blackColor1;
         }
 
-        .search form input {
+        .search .el-form-item input {
+            color: $blackColor1;
             background: #00000012;
         }
 
@@ -85,6 +96,7 @@ const { y } = useScroll(window)
         width: 180px;
 
         a {
+            cursor: pointer;
             display: block;
             width: 100%;
             height: 80px;
@@ -126,7 +138,8 @@ const { y } = useScroll(window)
     .search {
         margin-left: auto;
 
-        form {
+        .el-form-item {
+            margin: 0;
             position: relative;
             height: 40px;
 
@@ -135,7 +148,8 @@ const { y } = useScroll(window)
                 height: 100%;
                 padding-left: 12px;
                 border-radius: 40px;
-                color: #66666622;
+                font-weight: bold;
+                color: $whiteColor1;
                 background: #ffffff66;
             }
 

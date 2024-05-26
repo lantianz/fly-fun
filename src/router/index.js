@@ -12,14 +12,14 @@ const router = createRouter({
           component: () => import('@/views/Home/index.vue')
         },
         {
-          path: 'Anime/:id',
+          path: 'Anime/:path/:id',
           component: () => import('@/views/Anime/index.vue')
-        }
+        },
+        {
+          path: 'Search/',
+          component: () => import('@/views/Search/index.vue')
+        },
       ]
-    },
-    {
-      path: '/login',
-      component: () => import('@/views/Login/index.vue')
     }
   ]
 })
