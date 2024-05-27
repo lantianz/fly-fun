@@ -1,6 +1,6 @@
 <script setup>
 import SearchContent from './components/SearchContent.vue'
-import { getSearchAPI } from '@/apis/home'
+import { getSearchAPI } from '@/apis/search'
 import { onMounted } from 'vue';
 
 const search = async () => {

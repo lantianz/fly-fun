@@ -11,7 +11,7 @@ const { y } = useScroll(window)
 
 const router = useRouter()
 const open = (url) => {
-    router.push({ path: '/More/' + url })
+    router.push({ path: '/More/', query: {url: url} })
 }
 // 搜索
 const form = ref({

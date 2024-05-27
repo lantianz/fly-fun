@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from "vue";
+import { useRouter } from 'vue-router'
 import { useAnimeStore } from "@/stores/anime";
+const router = useRouter()
 const animeStore = useAnimeStore()
 
 const activeTab = ref([])
@@ -10,9 +12,8 @@ const getList = (tab) => {
     activeTab.value = tab.listTitle
 }
 
-const videoPlay = (episode) => {
-    if (episode === undefined || episode === null || episode === '') return
-    console.log(episode)
+const goToPlay = (url) => {
+    router.push({ path: '/Play', query: { url: url } })
 }
 </script>
 <template>
@@ -24,18 +25,23 @@ const videoPlay = (episode) => {
                 <ul>
                     <li>{{ animeStore.anime.score }}</li>
                     <li>{{ animeStore.anime.updateTime }}</li>
-                    <li>标签: <el-link :underline="false" v-for="(tag, i) in animeStore.anime.tagTitles" :key="tag"
-                            :href="animeStore.anime.tagUrls[i]"><el-check-tag style="margin: 8px;" size="small" checked round>{{
-                                tag }}</el-check-tag></el-link></li>
+                    <li>标签:
+                        <el-link :underline="false" :href="animeStore.anime.tagUrls[i]"
+                            v-for="(tag, i) in animeStore.anime.tagTitles" :key="tag">
+                            <el-check-tag style="margin: 8px;" size="small" checked round>{{ tag }}</el-check-tag>
+                        </el-link>
+                    </li>
                 </ul>
                 <el-button type="primary" round
-                    @click="videoPlay(animeStore.anime.dramasList[0].dramasItemList[0].url)">立即播放</el-button>
+                    @click="goToPlay(animeStore.anime.dramasList[0].dramasItemList[0].url)">立即播放</el-button>
             </div>
         </div>
+        <!-- 剧情简介 -->
         <div class="description">
             <h2>剧情简介</h2>
             <p>{{ animeStore.anime.introduction }}</p>
         </div>
+        <!-- 播放列表 -->
         <div class="episodes">
             <h2>播放列表</h2>
             <div class="tabs">
@@ -46,7 +52,7 @@ const videoPlay = (episode) => {
                 </el-button>
             </div>
             <div class="episode-list">
-                <el-button v-for="episode in tabList" :key="episode" class="episode" @click="videoPlay(episode.url)">
+                <el-button v-for="episode in tabList" :key="episode" class="episode" @click="goToPlay(episode.url)">
                     {{ episode.title }}
                 </el-button>
             </div>

@@ -1,5 +1,6 @@
-import { computed, reactive, ref } from "vue";
+import { reactive, ref } from "vue";
 import { defineStore } from "pinia";
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { getAnimeAPI } from "@/apis/anime";
 import { useRoute } from "vue-router";
 
@@ -9,28 +10,17 @@ export const useAnimeStore = defineStore("anime", () => {
     path: "",
     id: "",
   });
-  url.path = computed(() => {
-    return route.params.path;
-  });
-  url.id = computed(() => {
-    return route.params.id;
-  });
+  url.path = route.params.path
+  url.id = route.params.id
 
-  const animeR = ref({});
-  const recommendListR = ref([]);
+  const anime = ref({});
+  const recommendList = ref([]);
 
   const getAnime = async () => {
     const res = await getAnimeAPI(url);
-    animeR.value = res.data.detailsDataBean;
-    recommendListR.value = res.data.detailsDataBean.recommendList;
+    anime.value = res.data.detailsDataBean;
+    recommendList.value = res.data.detailsDataBean.recommendList;
   };
-
-  const anime = computed(() => {
-    return animeR.value;
-  });
-  const recommendList = computed(() => {
-    return recommendListR.value;
-  });
   
   return {
     anime,

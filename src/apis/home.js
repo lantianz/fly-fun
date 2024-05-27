@@ -13,11 +13,3 @@ export const getWeekAPI = () => {
     url: "/api/week/get",
   });
 };
-
-export const getSearchAPI = (params) => {
-  return http({
-    method: "get",
-    url: "/api/search/get",
-    params: params,
-  });
-};

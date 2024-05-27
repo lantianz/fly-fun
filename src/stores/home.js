@@ -1,6 +1,7 @@
 import { getIndexAPI } from "@/apis/home";
 import { ref } from "vue";
 import { defineStore } from "pinia";
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 export const useHomeStore = defineStore("home", () => {
   const indexList = ref([]);

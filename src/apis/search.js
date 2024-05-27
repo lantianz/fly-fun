@@ -1,9 +1,9 @@
 import http from "@/utils/http";
 
-export const getAnimeAPI = (params) => {
+export const getSearchAPI = (params) => {
   return http({
     method: "get",
-    url: "/api/details/get",
+    url: "/api/search/get",
     params: params,
   });
 };

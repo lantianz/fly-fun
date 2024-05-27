@@ -36,7 +36,7 @@ const { anime, clickEvent } = defineProps(['anime', 'clickEvent'])
     .el-image {
         width: 200px;
         height: 300px;
-        border-radius: 10px;
+        border-radius: 20px;
     }
 
     .anime-info {

@@ -15,6 +15,7 @@ onMounted(() => {
     <AnimeDetail />
     <AnimeRecommend />
   </div>
+  <el-backtop :right="100" :bottom="100" />
 </template>
 
 <style scoped lang="scss">
