@@ -1,13 +1,13 @@
 <script setup>
 import AnimeDetail from './components/AnimeDetail.vue';
 import AnimeRecommend from './components/AnimeRecommend.vue';
-import { useAnimeStore } from "@/stores/anime";
 import { onMounted } from 'vue';
+import { useAnimeStore } from "@/stores/anime";
+
 const animeStore = useAnimeStore()
-onMounted(() => {
-  scrollTo(0, 0)
-  animeStore.getAnime()
-})
+animeStore.getAnime()
+
+onMounted(() => scrollTo(0, 0))
 </script>
 
 <template>

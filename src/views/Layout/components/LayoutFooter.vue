@@ -47,7 +47,7 @@
         font-size: 28px;
   
         i {
-          font-size: 50px;
+          font-size: 40px;
           vertical-align: middle;
           margin-right: 10px;
           font-weight: 100;

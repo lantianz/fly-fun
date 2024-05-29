@@ -3,14 +3,12 @@ import HomeBanner from './components/HomeBanner.vue';
 import HomeSchedule from './components/HomeSchedule.vue';
 import HomeAnimes from './components/HomeAnimes.vue';
 import { useHomeStore } from '@/stores/home';
-import { onMounted } from 'vue';
 
 const homeStore = useHomeStore()
-const { getIndex } = homeStore
+const { getIndex, getWeek } = homeStore
+getIndex()
+getWeek()
 
-onMounted(() => {
-  getIndex()
-})
 </script>
 
 <template>

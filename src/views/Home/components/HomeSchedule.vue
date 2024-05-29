@@ -1,30 +1,15 @@
 <script setup>
-import PageHandle from '@/components/PageHandle.vue';
-import AnimeItem from '@/components/AnimeItem.vue';
+import BasePageHandle from '@/components/BasePageHandle.vue';
+import BaseAnimeItem from '@/components/BaseAnimeItem.vue';
 import { ref, onMounted, reactive, watchEffect } from 'vue';
 import { useRouter } from 'vue-router'
-import { getWeekAPI } from '@/apis/home'
+import { useHomeStore } from '@/stores/home';
+import { storeToRefs } from 'pinia';
 
-const week = ref([]);
-const sonRef = ref(null)
-const animes = ref([])
-// 初始化子组件传来的数据onMounted
-const init = () => watchEffect(() => {
-    animes.value = sonRef.value.data
-})
-
-const getWeek = async () => {
-    try {
-        const res = await getWeekAPI();
-        week.value = res.data.weekDataBeans;
-        return week.value;
-    } catch (error) {
-        console.error('Error fetching week data:', error);
-    }
-};
+const homeStore = useHomeStore()
+const { week } = storeToRefs(homeStore)
 
 const days = ref(['周一', '周二', '周三', '周四', '周五', '周六', '周日'])
-// 获取今天
 const getToday = () => {
     const today = ref(0)
     today.value = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1
@@ -35,28 +20,32 @@ const activeDay = ref(getToday())
 const aObj = reactive({
     items: []
 })
+const initAObj = () => {
+    for (let i = 0; i < week.value.length; i++) {
+        if (week.value[i].weekDay === activeDay.value) {
+            aObj.items = week.value[i].weekItems;
+        }
+    }
+}
+// 初始化获得今日的数据 --> 子组件BasePageHandle
+initAObj()
+
+const sonRef = ref(null)
+const animes = ref([])
+const initAnimes = () => watchEffect(() => animes.value = sonRef.value.data)
+
 const selectDay = (index) => {
     activeDay.value = index
     aObj.items = week.value[activeDay.value].weekItems;
 }
 
 onMounted(() => {
-    getWeek().then((res) => {
-        for (let i = 0; i < res.length; i++) {
-            if (res[i].weekDay === activeDay.value) {
-                aObj.items = res[i].weekItems;
-            }
-        }
-    })
-    init()
+    // 等待该页面挂载后获得子组件BasePageHandle的数据 --> animes --> 子组件BaseAnimeItem
+    initAnimes()
 })
 
 const router = useRouter()
-const goToAnime = (url) => {
-    router.push({ path: '/Anime' + url })
-}
-
-
+const goToAnime = (url) => router.push({ path: '/Anime' + url })
 </script>
 
 <template v-if="aObj.items">
@@ -64,7 +53,7 @@ const goToAnime = (url) => {
         <div class="title">
             <h1>本周更新</h1>
             <el-divider />
-            <PageHandle ref="sonRef" :lineNum="1" :aObj="aObj" />
+            <BasePageHandle ref="sonRef" :lineNum="1" :aObj="aObj" />
         </div>
         <div class="tabs">
             <el-button round v-for="(day, index) in days" :key="day" :class="{ active: activeDay === index }"
@@ -73,7 +62,7 @@ const goToAnime = (url) => {
             </el-button>
         </div>
         <div class="anime-list">
-            <AnimeItem v-for="anime in animes" :key="anime" :anime="anime" :clickEvent="goToAnime"></AnimeItem>
+            <BaseAnimeItem v-for="anime in animes" :key="anime" :anime="anime" :clickEvent="goToAnime"></BaseAnimeItem>
         </div>
     </div>
 </template>

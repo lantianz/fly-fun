@@ -2,14 +2,12 @@
 import { onMounted, ref } from "vue";
 
 const imgList = ref([
-    { src: "https://image.dbbqb.com/202405271700/0cefc61b6bae909336f0ae9fb89204bf/k1D70", alt: "404" },
-    { src: "https://image.dbbqb.com/202405271659/898d2ce5d7f49282f8031deb78b5ec78/4zGbG", alt: "404" },
-    { src: "https://image.dbbqb.com/202405271658/34c1bbf29a6f142ff05abeadbd69dd9a/9NonG", alt: "404" },
-    { src: "https://image.dbbqb.com/202405271723/3d9bee5dce7767d6ef453b57d0124dbb/2eYbG", alt: "404" },
-    { src: "https://image.dbbqb.com/202405271724/200a19764a2a0323a84d942be7602419/QzxEW", alt: "404" },
+    { src: "https://img.moehu.org/pic.php?id=longtu", alt: "404" },
+    { src: "https://img.moehu.org/pic.php?id=huaji", alt: "404" },
+    { src: "https://img.moehu.org/pic.php?id=pand", alt: "404" },
 ]);
-const img = ref({});
 
+const img = ref({ src: "https://img.moehu.org/pic.php?id=longtu", alt: "404" });
 onMounted(() => {
     img.value = imgList.value[Math.floor(Math.random() * imgList.value.length)];
 });
@@ -30,6 +28,7 @@ onMounted(() => {
 .err404 {
     margin: auto;
     width: 280px;
+    height: 100vh;
     display: flex;
     justify-content: center;
     flex-direction: column;

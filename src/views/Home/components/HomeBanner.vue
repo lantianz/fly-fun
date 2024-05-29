@@ -2,10 +2,12 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useHomeStore } from '@/stores/home';
+
 const homeStore = useHomeStore()
 
 const router = useRouter()
 const now = ref(0)
+// 点击两侧幻灯片不跳转
 const goToAnime = (index, url) => {
     if(index === now.value){
         router.push({ path: '/Anime' + url })
@@ -13,6 +15,7 @@ const goToAnime = (index, url) => {
         return
     }
 }
+// 获取当前幻灯片索引
 const changeCarousel = (index) => {
     now.value = index
 }

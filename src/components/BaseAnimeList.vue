@@ -1,6 +1,6 @@
 <script setup>
-import PageHandle from '@/components/PageHandle.vue';
-import AnimeItem from '@/components/AnimeItem.vue';
+import BasePageHandle from '@/components/BasePageHandle.vue';
+import BaseAnimeItem from '@/components/BaseAnimeItem.vue';
 import { onMounted, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router'
 const { lineNum, lineCount, animeObj, clickEvent } = defineProps([ 'lineNum', 'lineCount', 'animeObj', 'clickEvent'])
@@ -32,10 +32,10 @@ onMounted(() => {
                 <a v-if="animeObj.hasMore" @click="getMore(animeObj.more)" class="more">更多</a>
             </div>
             <el-divider />
-            <PageHandle ref="sonRef" :lineNum="lineNum" :lineCount="lineCount" :aObj="animeObj" />
+            <BasePageHandle ref="sonRef" :lineNum="lineNum" :lineCount="lineCount" :aObj="animeObj" />
         </div>
         <div class="anime-list">
-            <AnimeItem v-for="anime in animes" :key="anime" :anime="anime" :click-event="clickEvent" />
+            <BaseAnimeItem v-for="anime in animes" :key="anime" :anime="anime" :click-event="clickEvent" />
         </div>
     </div>
 </template>

@@ -11,15 +11,19 @@
   },
   "dependencies": {
     "@vueuse/core": "^10.9.0",
+    "artplayer": "^5.1.1",
+    "artplayer-plugin-hls-quality": "^2.0.0",
     "axios": "^1.6.8",
-    "dplayer": "^1.27.1",
     "element-plus": "^2.7.3",
     "hls.js": "^1.5.8",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",
-    "vue3-video-play": "^1.3.2"
+    "xgplayer": "^3.0.18",
+    "xgplayer-flv": "^3.0.18",
+    "xgplayer-hls.js": "^3.0.18",
+    "xgplayer-mp4": "^3.0.18"
   },
   "devDependencies": {
     "@types/dplayer": "^1.25.5",

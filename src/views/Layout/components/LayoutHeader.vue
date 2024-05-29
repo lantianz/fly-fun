@@ -10,9 +10,7 @@ const { tagObj } = storeToRefs(homeStore)
 const { y } = useScroll(window)
 
 const router = useRouter()
-const open = (url) => {
-    router.push({ path: '/More/', query: {url: url} })
-}
+const open = (url) => router.push({ path: '/More/', query: { url: url } })
 // 搜索
 const form = ref({
     keyword: '',
@@ -23,8 +21,17 @@ const onSubmit = () => {
     router.push({ path: '/Search', query: form.value })
 };
 // logo刷新
-const refresh = () => {
-    location.replace('/');
+const refresh = () => location.replace('/');
+
+const imgList = [
+    'https://img.moehu.org/pic.php?id=longtu',
+    'https://img.moehu.org/pic.php?id=img1',
+]
+const avatar = ref(null)
+avatar.value = imgList[Math.floor(Math.random() * imgList.length)]
+const msg = ref("∑(っ°Д°;)っ别看了，我还没做这个 ┗( ▔, ▔ )┛ 刷新页面会换头像，当然，你可以点开瞅瞅")
+const changeMsg = () => {
+    msg.value = "没想到吧！它可能还变"
 }
 </script>
 
@@ -54,10 +61,13 @@ const refresh = () => {
             <!-- <div class="history">
                 <RouterLink to="/history"><i class="iconfont icon-lishi"></i></RouterLink>
             </div> -->
-            <el-popover placement="top-start" :width="250" trigger="hover" content="别点了，我还没做这个┗( ▔, ▔ )┛">
+            <el-popover placement="top-start" :width="250" trigger="hover"
+                :content="msg">
                 <template #reference>
-                    <div class="avatar">
-                        <el-avatar src="src/assets/images/avatar.jpg" />
+                    <div class="avatar" @click="changeMsg">
+                        <el-image :src="avatar" :zoom-rate="1.2" :max-scale="3" :min-scale="0.2"
+                            :preview-src-list="imgList" :initial-index="Math.floor(Math.random() * imgList.length)"
+                            fit="cover" />
                     </div>
                 </template>
             </el-popover>
@@ -201,9 +211,14 @@ const refresh = () => {
     .avatar {
         width: 40px;
         height: 40px;
-        border-radius: 40px;
         margin-left: 30px;
         cursor: pointer;
+
+        .el-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 40px;
+        }
     }
 }
 </style>

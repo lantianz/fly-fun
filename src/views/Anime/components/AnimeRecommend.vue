@@ -1,5 +1,5 @@
 <script setup>
-import AnimeItem from '@/components/AnimeItem.vue';
+import BaseAnimeItem from '@/components/BaseAnimeItem.vue';
 import { useAnimeStore } from "@/stores/anime";
 
 const animeStore = useAnimeStore()
@@ -7,7 +7,6 @@ const animeStore = useAnimeStore()
 const goToAnime = (url) => {
     location.href = '/Anime' + url
 }
-
 </script>
 
 <template>
@@ -15,7 +14,8 @@ const goToAnime = (url) => {
         <div class="recommend-list">
             <h2>推荐</h2>
             <div class="anime-list">
-                <AnimeItem v-for="anime in animeStore.recommendList" :key="anime.title" :anime="anime" :click-event="goToAnime" />
+                <BaseAnimeItem v-for="anime in animeStore.recommendList" :key="anime.title" :anime="anime"
+                    :click-event="goToAnime" />
             </div>
         </div>
     </div>
@@ -25,7 +25,6 @@ const goToAnime = (url) => {
 @import '@/styles/loader.scss';
 
 .anime-recommend {
-    padding: 20px 20px 0;
     width: calc(100vw * 0.8);
     margin: 0 auto;
 
@@ -33,6 +32,7 @@ const goToAnime = (url) => {
         margin-top: 20px;
 
         h2 {
+            padding: 20px 20px 0;
             margin: 0 0 10px;
         }
 

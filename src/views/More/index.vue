@@ -14,7 +14,7 @@ const route = useRoute();
       <el-divider />
     </div>
     <div class="anime-list">
-      <AnimeItem v-for="anime in animes" :key="anime" :anime="anime" :click-event="clickEvent" />
+      <BaseAnimeItem v-for="anime in animes" :key="anime" :anime="anime" :click-event="clickEvent" />
     </div>
   </div>
   <el-backtop :right="100" :bottom="100" />
