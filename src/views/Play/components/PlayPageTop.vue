@@ -12,7 +12,7 @@ const route = useRoute();
 const defaultConfigs = reactive({
   container: 'artplayer',
   id: route.query.url,
-  url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+  url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', //'https://sf1-cdn-tos.huoshanstatic.com/obj/media-fe/xgplayer_doc_video/mp4/xgplayer-demo-360p.mp4'
   poster: 'src/assets/images/poster.png',
   autoplay: false,
   volume: 1,
@@ -27,32 +27,33 @@ watchEffect(() => {
   defaultConfigs.url = urls.value
 })
 
-onBeforeMount(() => {
-  watch(() => urls.value, () => {
-    if (playerRef.value) {
-      destroyPlayer()
-      initPlayer()
-    }
-  })
+watch(() => urls.value, () => {
+  if (playerRef.value) {
+    destroyPlayer()
+    initPlayer()
+    getActiveTab()
+  }
 })
 onMounted(() => {
   initPlayer()
+  getActiveTab()
 })
 
+const getActiveTab = () => {
+  dramasList.value.forEach(element => {
+    if (element.selected) {
+      getList(element)
+      console.log(activeTab.value)
+      activeTab.value = element.listTitle
+    }
+  })
+}
 const tabList = ref([])
 const activeTab = ref([])
 const getList = (tab) => {
   tabList.value = tab.dramasItemList
   activeTab.value = tab.listTitle
 }
-const act = computed(() => {
-  dramasList.value.forEach(element => {
-    if (element.selected) {
-      return element.listTitle
-    }
-  })
-  return '无'
-})
 
 const router = useRouter()
 const goToPlay = (url) => router.push({ path: '/Play', query: { url: url } }) //location.href = '/Play' + url
@@ -77,14 +78,12 @@ const goToPlay = (url) => router.push({ path: '/Play', query: { url: url } }) //
         <div class="episodes">
           <h2>播放列表</h2>
           <div class="tabs">
-            <p style="align-content: center">当前播放：{{ act }}</p>
             <span style="align-content: center">播放源：</span>
-            <el-button v-for="tab in dramasList" :key="tab" class="tab"
-              :class="{ active: activeTab === tab.listTitle }" @click="getList(tab)">
+            <el-button v-for="tab in dramasList" :key="tab" class="tab" :class="{ active: activeTab == tab.listTitle }"
+              @click="getList(tab)">
               {{ tab.listTitle }}
             </el-button>
           </div>
-          <p>{{ defaultConfigs.url }}</p>
           <div class="episode-list">
             <el-button v-for="episode in tabList" :key="episode" class="episode" :class="{ active: episode.selected }"
               @click="goToPlay(episode.url)">
