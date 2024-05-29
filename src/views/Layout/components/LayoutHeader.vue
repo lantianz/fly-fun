@@ -216,7 +216,9 @@ const changeMsg = () => {
 
         .el-image {
             width: 100%;
+            min-width: 40px;
             height: 100%;
+            min-height: 40px;
             border-radius: 40px;
         }
     }

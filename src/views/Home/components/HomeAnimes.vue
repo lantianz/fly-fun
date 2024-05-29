@@ -8,7 +8,7 @@ const homeStore = useHomeStore()
 const { animeObj } = storeToRefs(homeStore)
 
 const router = useRouter()
-const goToAnime = (url) => router.push({ path: '/Anime' + url })
+const goToAnime = (url) => router.push({ path: '/Anime', query: { url: url }})
 </script>
 
 <template>

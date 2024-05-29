@@ -1,33 +1,42 @@
 <script setup>
 import BaseArtPlayer from '@/components/BaseArtPlayer.vue';
 import { useRouter } from 'vue-router'
-import { onMounted, reactive, ref, watchEffect } from 'vue';
-import { storeToRefs } from 'pinia';
-import { usePlayStore } from '@/stores/play';
-import { useAnimeStore } from "@/stores/anime";
-const playStore = usePlayStore()
-const animeStore = useAnimeStore()
+import { useRoute } from 'vue-router';
+import { computed, onBeforeMount, onMounted, reactive, ref, toRefs, watch, watchEffect } from 'vue';
 
 // 响应式数据
-const { playUrl } = storeToRefs(playStore)
-const { anime } = storeToRefs(animeStore)
+const props = defineProps(['urls', 'dramasList'])
+const { urls, dramasList } = toRefs(props)
 
+const route = useRoute();
 const defaultConfigs = reactive({
-    id: 'your-url-id',
-    url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
-    poster: 'src/assets/images/poster.png',
-    autoplay: true,
-    volume: 1,
-    autoPlayback: true, //回放功能配合id
-    icons: {
-        // loading: '<img src="/assets/img/ploading.gif">', // 加载中图标
-        // state: '<img width="150" heigth="150" src="/assets/img/state.svg">', // 暂停图标
-        // indicator: '<img width="16" heigth="16" src="/assets/img/indicator.svg">',   //进度条图标
-    },
+  container: 'artplayer',
+  id: route.query.url,
+  url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+  poster: 'src/assets/images/poster.png',
+  autoplay: false,
+  volume: 1,
+  autoPlayback: true, //回放功能配合id
+  icons: {},
 })
+const playerRef = ref(null)
+const initPlayer = () => playerRef.value.init()
+const destroyPlayer = () => playerRef.value.destroy()
 
 watchEffect(() => {
-  defaultConfigs.url = playUrl.value
+  defaultConfigs.url = urls.value
+})
+
+onBeforeMount(() => {
+  watch(() => urls.value, () => {
+    if (playerRef.value) {
+      destroyPlayer()
+      initPlayer()
+    }
+  })
+})
+onMounted(() => {
+  initPlayer()
 })
 
 const tabList = ref([])
@@ -36,43 +45,49 @@ const getList = (tab) => {
   tabList.value = tab.dramasItemList
   activeTab.value = tab.listTitle
 }
-const router = useRouter()
-const goToPlay = (url) => router.go('/Play' + url) //location.href = '/Play' + url
+const act = computed(() => {
+  dramasList.value.forEach(element => {
+    if (element.selected) {
+      return element.listTitle
+    }
+  })
+  return '无'
+})
 
-onMounted(() => {
-  scrollTo(0, 0)
-});
+const router = useRouter()
+const goToPlay = (url) => router.push({ path: '/Play', query: { url: url } }) //location.href = '/Play' + url
 </script>
 
 <template>
   <div class="player">
-    <!-- 播放器 -->
+    <!-- 播放器:key="urlKey" -->
     <el-col :span="16" id="app-container" class="video-box">
-      <!-- <BaseXGPlayer :configs="defaultConfigs" /> -->
-      <BaseArtPlayer :configs="defaultConfigs" style="width: 100%; height: 100%;" />
+      <BaseArtPlayer ref="playerRef" :configs="defaultConfigs" style="width: 100%; height: 100%;" />
     </el-col>
     <!-- 信息 -->
     <el-col :span="8" class="info-box">
       <el-scrollbar class="infoElement">
-        <div class="anime-info">
+        <!-- <div class="anime-info">
           <h1>{{ anime.title }}</h1>
           <ul>
             <li>{{ anime.score }}</li>
             <li>{{ anime.updateTime }}</li>
           </ul>
-        </div>
+        </div> -->
         <div class="episodes">
           <h2>播放列表</h2>
           <div class="tabs">
+            <p style="align-content: center">当前播放：{{ act }}</p>
             <span style="align-content: center">播放源：</span>
-            <el-button v-for="tab in anime.dramasList" :key="tab" class="tab"
+            <el-button v-for="tab in dramasList" :key="tab" class="tab"
               :class="{ active: activeTab === tab.listTitle }" @click="getList(tab)">
               {{ tab.listTitle }}
             </el-button>
           </div>
-          <span>{{ defaultConfigs.url }}</span>
+          <p>{{ defaultConfigs.url }}</p>
           <div class="episode-list">
-            <el-button v-for="episode in tabList" :key="episode" class="episode" @click="goToPlay(episode.url)">
+            <el-button v-for="episode in tabList" :key="episode" class="episode" :class="{ active: episode.selected }"
+              @click="goToPlay(episode.url)">
               {{ episode.title }}
             </el-button>
           </div>
@@ -183,6 +198,11 @@ onMounted(() => {
             cursor: pointer;
 
             &:hover {
+              background: $xtxColor;
+              color: $whiteColor1;
+            }
+
+            &.active {
               background: $xtxColor;
               color: $whiteColor1;
             }

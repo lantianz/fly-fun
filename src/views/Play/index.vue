@@ -1,18 +1,21 @@
 <script setup>
 import PlayPageTop from './components/PlayPageTop.vue';
 import { usePlayStore } from '@/stores/play';
-import { useAnimeStore } from "@/stores/anime";
+import { onMounted } from 'vue';
 
 const playStore = usePlayStore()
-const animeStore = useAnimeStore()
+const { getPlay } = playStore
 
-playStore.getPlay()
-animeStore.getAnime()
+getPlay()
+
+onMounted(() => {
+  scrollTo(0, 0)
+})
 </script>
 
 <template>
-  <div class="play">
-    <PlayPageTop />
+  <div class="play" v-if="playStore.urls">
+    <PlayPageTop :urls="playStore.urls[0]" :dramasList="playStore.dramasList" />
   </div>
 </template>
 

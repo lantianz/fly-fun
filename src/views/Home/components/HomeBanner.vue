@@ -10,7 +10,7 @@ const now = ref(0)
 // 点击两侧幻灯片不跳转
 const goToAnime = (index, url) => {
     if(index === now.value){
-        router.push({ path: '/Anime' + url })
+        router.push({ path: '/Anime', query: { url: url }})
     } else {
         return
     }
@@ -26,7 +26,7 @@ const changeCarousel = (index) => {
     <div class="home-banner">
         <el-carousel arrow="never" :interval="4000" type="card" height="calc(100vh - 90px)" @change="changeCarousel">
             <el-carousel-item v-for="(item, index) in homeStore.bannerObj.items" :key="item" @click="goToAnime(index, item.url)">
-                <el-image class="banner-img" :src="item.img">
+                <el-image class="banner-img" :src="item.img" lazy>
                     <template #placeholder>
                         <div class="load">
                             <div class="loader"></div>

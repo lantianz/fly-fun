@@ -45,10 +45,10 @@ onMounted(() => {
 })
 
 const router = useRouter()
-const goToAnime = (url) => router.push({ path: '/Anime' + url })
+const goToAnime = (url) => router.push({ path: '/Anime', query: { url: url }})
 </script>
 
-<template v-if="aObj.items">
+<template>
     <div id="home-schedule" class="home-schedule">
         <div class="title">
             <h1>本周更新</h1>

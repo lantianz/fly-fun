@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted, toRefs, watch } from 'vue';
+import { ref, onMounted, onUnmounted, toRefs } from 'vue';
 import Artplayer from "artplayer";
 import Hls from 'hls.js';
 import artplayerPluginHlsQuality from 'artplayer-plugin-hls-quality';
@@ -13,7 +13,7 @@ const clientHeight = ref(1080)
 
 const init = () => {
     art.value = new Artplayer({
-        container: document.querySelector("#artplayer-app"),
+        container: '.playerArt',
         id: configs.value.id,
         url: configs.value.url,
         poster: configs.value.poster,
@@ -33,7 +33,7 @@ const init = () => {
                 auto: 'Auto',
             }),
         ],
-        type: 'm3u8',
+        // type: 'm3u8',
         customType: {
             m3u8: function playM3u8(video, url, art) {
                 if (Hls.isSupported()) {
@@ -51,7 +51,7 @@ const init = () => {
             }
         },
         pip: true,
-        mutex: true,
+        mutex: false,
         screenshot: true,
         setting: true,
         playbackRate: true,
@@ -89,21 +89,22 @@ const init = () => {
         // autoMini: false,
     });
 };
+const destroy = () => {
+    art.value.destroy();
+};
+
+defineExpose({ init, destroy })
 
 onMounted(() => {
-    init()
+    // init()
     clientWidth.value = document.body.clientWidth
     clientHeight.value = document.body.clientHeight
     window.addEventListener('resize', () => {
         clientWidth.value = document.body.clientWidth
         clientHeight.value = document.body.clientHeight
-        init()
+        // init()
     }, false)
 })
-
-watch(() => configs.value.url, () => {
-    init()
-}, { deep: true })
 
 onUnmounted(() => {
     art.value?.destroy()
@@ -112,7 +113,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div id="artplayer-app" style="width: 100%;height: 100%;"></div>
+    <div class="playerArt" style="width: 1000px;height: 500px;"></div>
 </template>
 
 <style lang="scss" scoped>

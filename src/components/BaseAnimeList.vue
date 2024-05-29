@@ -50,7 +50,7 @@ onMounted(() => {
     align-items: center;
 
     .title {
-        width: 250px;
+        width: 360px;
         display: flex;
         align-items: center;
         justify-content: space-between;

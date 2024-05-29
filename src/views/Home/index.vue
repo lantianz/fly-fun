@@ -14,7 +14,7 @@ getWeek()
 <template>
   <div class="home">
     <HomeBanner />
-    <HomeSchedule />
+    <HomeSchedule v-if="homeStore.week" />
     <HomeAnimes />
   </div>
   <el-backtop :right="100" :bottom="100" />

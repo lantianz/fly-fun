@@ -31,20 +31,19 @@ const getPlugins = () => {
 
 const init = () => {
     player.value = new Player({
-        id: configs.value.playerId, // 玩家ID
-        isLive: false, // 是否为直播
-        autoplayMuted: configs.value.autoplayMuted, // 自动播放且静音
-        autoplay: configs.value.autoplay, // 自动播放
+        id: configs.value.playerId, 
+        isLive: false, 
+        autoplayMuted: configs.value.autoplayMuted, 
+        autoplay: configs.value.autoplay, 
         volume: configs.value.volume,
-        plugins: getPlugins(), // 使用的插件列表
-        poster: configs.value.poster, //封面图
-        url: configs.value.url, // 视频源URL
-        fitVideoSize: configs.value.fitVideoSize, // 视频尺寸适应方式
-        // 根据当前客户端窗口尺寸调整视频高度和宽度
+        plugins: getPlugins(), 
+        poster: configs.value.poster, 
+        url: configs.value.url, 
+        fitVideoSize: configs.value.fitVideoSize,
         height: configs.value.height * (clientHeight.value / 1080),
         width: configs.value.width * (clientWidth.value / 1920),
-        lang: 'zh-cn', // 设置语言为简体中文
-        controls: configs.value.controls, // 是否显示控制条
+        lang: 'zh-cn',
+        controls: configs.value.controls, 
         errorTips: `好像有点问题？<span>刷新</span>试试`,
         // cssFullscreen: false,
         rotateFullscreen: true,

@@ -1,12 +1,14 @@
 <script setup>
 import AnimeDetail from './components/AnimeDetail.vue';
 import AnimeRecommend from './components/AnimeRecommend.vue';
-import { onMounted } from 'vue';
+import { onMounted, watchEffect } from 'vue';
 import { useAnimeStore } from "@/stores/anime";
 
 const animeStore = useAnimeStore()
-animeStore.getAnime()
-
+watchEffect(() => {
+  animeStore.getAnime()
+  scrollTo({ top: 0, behavior: 'smooth' })
+})
 onMounted(() => scrollTo(0, 0))
 </script>
 

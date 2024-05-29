@@ -7,23 +7,17 @@ export const useAnimeStore = defineStore(
   "anime",
   () => {
     const route = useRoute();
-    const url = reactive({
+    const param = reactive({
       from: "",
-      path: "",
-      id: "",
+      url: "",
     });
-    if (route.params.id != null) {
-      url.path = route.params.path;
-      url.id = route.params.id;
-    } else {
-      url.from = route.query.from;
-    }
 
     const anime = ref({});
     const recommendList = ref([]);
 
     const getAnime = async () => {
-      const res = await getAnimeAPI(url);
+      param.url = route.query.url != null? route.query.url : route.query.from
+      const res = await getAnimeAPI(param);
       anime.value = res.data.detailsDataBean;
       recommendList.value = res.data.detailsDataBean.recommendList;
     };

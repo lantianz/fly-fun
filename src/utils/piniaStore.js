@@ -7,5 +7,4 @@ const pinia = createPinia()
 pinia.use(persist)
 // 导出pinia实例，给main使用
 export default pinia
-export * from './user'  //多个模块同理导出
  

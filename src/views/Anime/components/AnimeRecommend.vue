@@ -1,12 +1,12 @@
 <script setup>
 import BaseAnimeItem from '@/components/BaseAnimeItem.vue';
 import { useAnimeStore } from "@/stores/anime";
+import { useRouter } from 'vue-router'
 
 const animeStore = useAnimeStore()
 
-const goToAnime = (url) => {
-    location.href = '/Anime' + url
-}
+const router = useRouter()
+const goToAnime = (url) => router.push({ path: '/Anime', query: { url: url }})
 </script>
 
 <template>
