@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router';
 const homeStore = useHomeStore()
 const { tagObj } = storeToRefs(homeStore)
 
-const { y } = useScroll(window)
+const { y } = useScroll(window) 
 
 const router = useRouter()
 const open = (url) => router.push({ path: '/More/', query: { url: url } })

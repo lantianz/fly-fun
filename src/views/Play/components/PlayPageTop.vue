@@ -1,8 +1,7 @@
 <script setup>
 import BaseArtPlayer from '@/components/BaseArtPlayer.vue';
-import { useRouter } from 'vue-router'
 import { useRoute } from 'vue-router';
-import { computed, onBeforeMount, onMounted, reactive, ref, toRefs, watch, watchEffect } from 'vue';
+import { onMounted, reactive, ref, toRefs, watch, watchEffect } from 'vue';
 
 // 响应式数据
 const props = defineProps(['urls', 'dramasList'])
@@ -43,7 +42,6 @@ const getActiveTab = () => {
   dramasList.value.forEach(element => {
     if (element.selected) {
       getList(element)
-      console.log(activeTab.value)
       activeTab.value = element.listTitle
     }
   })
@@ -55,28 +53,31 @@ const getList = (tab) => {
   activeTab.value = tab.listTitle
 }
 
-const router = useRouter()
-const goToPlay = (url) => router.push({ path: '/Play', query: { url: url } }) //location.href = '/Play' + url
+const reverse = () => {
+  tabList.value.reverse()
+}
+
+const goToPlay = (url) => location.href = '/Play' + '?url=' + url
 </script>
 
 <template>
   <div class="player">
     <!-- 播放器:key="urlKey" -->
-    <el-col :span="16" id="app-container" class="video-box">
+    <el-col :span="18" id="app-container" class="video-box">
       <BaseArtPlayer ref="playerRef" :configs="defaultConfigs" style="width: 100%; height: 100%;" />
     </el-col>
     <!-- 信息 -->
-    <el-col :span="8" class="info-box">
+    <el-col :span="6" class="info-box">
       <el-scrollbar class="infoElement">
-        <!-- <div class="anime-info">
-          <h1>{{ anime.title }}</h1>
+        <div class="anime-info">
+          <h1>{{ dramasList[0].listInfo.title }}</h1>
+          <h2 style="color: #999999;">{{ dramasList[0].listInfo.episode }}</h2>
           <ul>
-            <li>{{ anime.score }}</li>
-            <li>{{ anime.updateTime }}</li>
+            <el-check-tag v-for="tag in dramasList[0].listInfo.tags" :key="tag" style="margin: 4px;" size="small" checked round>{{ tag }}</el-check-tag>
           </ul>
-        </div> -->
+        </div>
         <div class="episodes">
-          <h2>播放列表</h2>
+          <h2>播放列表<span @click="reverse">倒序</span></h2>
           <div class="tabs">
             <span style="align-content: center">播放源：</span>
             <el-button v-for="tab in dramasList" :key="tab" class="tab" :class="{ active: activeTab == tab.listTitle }"
@@ -101,7 +102,7 @@ const goToPlay = (url) => router.push({ path: '/Play', query: { url: url } }) //
   display: flex;
   padding: 10px 50px 0 50px;
   width: 100vw;
-  height: calc(calc((2 / 3) * 100vw - 100px) * calc(9 / 16));
+  height: calc(calc((3 / 4) * 100vw - 100px) * calc(9 / 16));
 
   .video-box {
     width: 100%;
@@ -134,19 +135,17 @@ const goToPlay = (url) => router.push({ path: '/Play', query: { url: url } }) //
         flex-direction: column;
 
         h1 {
-          font-size: 24px;
           font-weight: bold;
-          margin: 0 0 10px;
+        }
+
+        h2 {
+          font-weight: bold;
         }
 
         ul {
           list-style: none;
           padding: 0;
-          margin: 0 0 20px;
-
-          li {
-            margin-bottom: 5px;
-          }
+          margin: 0;
         }
       }
 
@@ -155,6 +154,18 @@ const goToPlay = (url) => router.push({ path: '/Play', query: { url: url } }) //
 
         h2 {
           margin: 0 0 10px;
+
+          span {
+            // float: right;
+            margin-left: 20px;
+            color: #999999;
+            font-size: 16px;
+            cursor: pointer;
+
+            &:hover {
+              color: $xtxColor;
+            }
+          }
         }
 
         .tabs {

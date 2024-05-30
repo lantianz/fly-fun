@@ -9,25 +9,30 @@ const router = createRouter({
       children: [
         {
           path: "",
+          name: "Home",
           component: () => import("@/views/Home/index.vue"),
         },
         {
           path: "Anime",
+          name: "Anime",
           component: () => import("@/views/Anime/index.vue"),
         },
         {
           path: "More",
+          name: "More",
           component: () => import("@/views/More/index.vue"), //waiting
         },
         {
           path: "Play",
-          component: () => import("@/views/Play/index.vue"), //doing
+          name: "Play",
+          component: () => import("@/views/Play/index.vue"),
+        },
+        {
+          path: "Search",
+          name: "Search",
+          component: () => import("@/views/Search/index.vue"), //doing
         },
       ],
-    },
-    {
-      path: "/Search",
-      component: () => import("@/views/Search/index.vue"), //waiting
     },
     {
       path: "/:pathMatch(.*)*",

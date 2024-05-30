@@ -1,20 +1,30 @@
 <script setup>
+import SearchHeader from './components/SearchHeader.vue'
 import SearchContent from './components/SearchContent.vue'
-import { getSearchAPI } from '@/apis/search'
-import { onMounted } from 'vue';
+import SearchFooter from './components/SearchFooter.vue'
+import { onMounted, ref, watchEffect } from 'vue';
+import { useSearchStore } from '@/stores/search';
+const searchStore = useSearchStore();
 
-const search = async () => {
-  const res = await getSearchAPI('form.value');
-  console.log("搜索结果:", res.data);
-};
+const res = ref({})
+searchStore.getSearch()
+watchEffect(() => {
+  res.value = searchStore.result
+  scrollTo({ top: 0, behavior: 'smooth' })
+})
 
-onMounted(() => search())
+onMounted(() => {
+  scrollTo(0, 0)
+})
 </script>
 
 <template>
   <div class="search">
-    <SearchContent />
+    <SearchHeader />
+    <SearchContent :result="res" />
+    <SearchFooter />
   </div>
+  <el-backtop :right="100" :bottom="100" />
 </template>
 
 <style scoped lang="scss">

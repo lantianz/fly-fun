@@ -11,9 +11,8 @@
 </template>
 
 <style scoped lang="scss">
-.slide-enter-active,
-.slide-leave-active {
-  transition: opacity 1.5s;
+.slide-enter-active {
+  transition: opacity 1.2s;
 }
 
 .slide-enter-from,

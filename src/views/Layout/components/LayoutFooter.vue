@@ -6,14 +6,14 @@
           <div class="slogan">
             <a href="javascript:;">
               <i class="iconfont icon-footer01"></i>
-              <span>还看？？？啥都没有！</span>
+              <span>还看？？？啥都没有了！</span>
             </a>
           </div>
           <!-- 版权信息 -->
           <div class="copyright">
             <p>
-              <a href="javascript:;">关于我们</a>
-              <a href="javascript:;">友情链接</a>
+              <a href="javascript:;">关于我（meiyou）</a>
+              <a href="javascript:;">友情链接（meiyou）</a>
             </p>
             <p>CopyRight © 2024 FlyFun</p>
           </div>

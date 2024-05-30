@@ -1,90 +1,240 @@
+<script setup>
+import { onMounted, reactive, ref, toRefs } from 'vue';
+import { useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
+import { useSearchStore } from '@/stores/search';
+const searchStore = useSearchStore();
+const router = useRouter()
+const route = useRoute()
+
+const props = defineProps(['result'])
+const { result } = toRefs(props)
+const { pageCount, vodDataBean } = toRefs(result.value)
+
+const form = reactive({
+    keyword: '',
+    page: 1,    //搜索结果从第一页开始
+});
+form.keyword = route.query.keyword
+const onSubmit = () => {
+    if (form.keyword != null && form.keyword.trim() !== '') {
+        // location.href = '/Search' + '?keyword=' + form.keyword + '&page=' + form.page
+        router.push({ path: '/Search', query: { keyword: form.keyword, page: 1 } })
+        searchStore.getSearchByKeyword(form.keyword)
+    }
+};
+
+const changePage = (val) => {
+    router.push({ path: '/Search', query: { keyword: form.keyword, page: form.page } })
+    searchStore.getSearchByPage(val)
+}
+
+const imgList = ref([
+    { src: "https://img.moehu.org/pic.php?id=longtu", alt: "404" },
+    { src: "https://img.moehu.org/pic.php?id=huaji", alt: "404" },
+    { src: "https://img.moehu.org/pic.php?id=pand", alt: "404" },
+]);
+
+const img = ref({ src: "https://img.moehu.org/pic.php?id=longtu", alt: "404" });
+onMounted(() => {
+    img.value = imgList.value[Math.floor(Math.random() * imgList.value.length)];
+});
+
+const goToAnime = (url) => router.push({ path: '/Anime', query: { url: url } })
+</script>
+
 <template>
-    <div>
-        <el-input v-model="searchQuery" placeholder="搜索" class="search-bar"></el-input>
-        <div class="result-list">
-            <el-card v-for="(item, index) in paginatedResults" :key="index" class="result-card">
-                <img :src="item.image" class="result-image" />
+    <div class="search">
+        <div class="search-box">
+            <el-form :model="form" @submit.prevent="onSubmit">
+                <el-form-item>
+                    <input type="text" v-model="form.keyword" placeholder="请输入您要搜索的内容...">
+                    <el-button class="btn-search" type="primary" @click="onSubmit"><i
+                            class="iconfont icon-sousuo"></i>&nbsp;搜索</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+        <div class="result-header">
+            <h1>搜索结果</h1>
+            <el-pagination :page-size="12" background layout="prev, pager, next" :page-count="pageCount"
+                @current-change="changePage" />
+        </div>
+        <div class="result-list" v-if="pageCount">
+            <el-card class="result-card" v-for="item in vodDataBean.itemList" :key="item">
+                <el-image v-if="item.img" :src="item.img" :lazy="true" @click="goToAnime(item.url)">
+                    <template #placeholder>
+                        <div class="load">
+                            <div class="loader"></div>
+                        </div>
+                    </template>
+                    <template #error>
+                        <div class="load">
+                            <div class="loader"></div>
+                        </div>
+                    </template>
+                </el-image>
                 <div class="result-content">
-                    <h3>{{ item.title }}</h3>
-                    <p>{{ item.description }}</p>
-                    <el-button type="primary">查看详情</el-button>
+                    <h1>{{ item.title }}</h1>
+                    <ul>
+                        <el-check-tag size="small" checked round>{{ item.topLeftTag }}</el-check-tag>
+                        <el-check-tag size="small" checked round>{{ item.episodesTag }}</el-check-tag>
+                    </ul>
+                    <p>{{ item.introduce }}</p>
+                    <el-button @click="goToAnime(item.url)" type="primary">查看详情</el-button>
                 </div>
             </el-card>
         </div>
-        <el-pagination background layout="prev, pager, next" :total="totalResults" :page-size="pageSize"
-            @current-change="handlePageChange"></el-pagination>
+        <div class="err404" v-if="!pageCount">
+            <h2>啥也没搜到啊</h2>
+            <img :src="img.src" :alt="img.alt" />
+        </div>
     </div>
 </template>
 
-<script setup>
-import { ref, computed } from 'vue';
+<style scoped lang="scss">
+@import '@/styles/loader.scss';
 
-const searchQuery = ref('');
-const currentPage = ref(1);
-const pageSize = ref(10);
+.search {
+    width: 100vw;
+    background-color: $whiteBgColor;
 
-const results = ref([
-    {
-        image: 'path/to/image1.jpg',
-        title: '少女与战车 剧场版',
-        description: '一些描述...',
-    },
-    {
-        image: 'path/to/image2.jpg',
-        title: '摇滚都市 第四季',
-        description: '一些描述...',
-    },
-    {
-        image: 'path/to/image3.jpg',
-        title: '逆转世界的电池少女',
-        description: '一些描述...',
-    },
-    // 添加更多条目...
-]);
+    .search-box {
+        width: 100%;
+        padding: 20px;
 
-const filteredResults = computed(() => {
-    return results.value.filter(item => item.title.includes(searchQuery.value));
-});
+        .el-form {
+            display: flex;
+            justify-content: center;
 
-const totalResults = computed(() => {
-    return filteredResults.value.length;
-});
+            .el-form-item {
+                margin: 0;
+                position: relative;
+                width: 60%;
+                height: 60px;
 
-const paginatedResults = computed(() => {
-    const start = (currentPage.value - 1) * pageSize.value;
-    const end = start + pageSize.value;
-    return filteredResults.value.slice(start, end);
-});
+                input {
+                    width: 100%;
+                    height: 100%;
+                    padding-left: 20px;
+                    border-radius: 999px;
+                    font-size: 20px;
+                    font-weight: bold;
+                    color: $blackColor1;
+                    background: #aaaaaa44;
+                }
 
-const handlePageChange = (page) => {
-    currentPage.value = page;
-};
-</script>
+                .btn-search {
+                    position: absolute;
+                    top: 0;
+                    right: -1px;
+                    width: 15%;
+                    height: 100%;
+                    border: none;
+                    border-radius: 999px;
+                    background: $xtxColor;
+                    font-size: 20px;
+                    font-weight: bold;
+                    color: #ffffff;
 
-<style scoped>
-.search-bar {
-    margin: 20px;
-    width: 300px;
-}
+                    &:hover {
+                        background: #aaa;
+                        color: #666;
+                    }
 
-.result-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-}
+                    .iconfont {
+                        font-size: 14px;
+                    }
+                }
+            }
+        }
+    }
 
-.result-card {
-    width: 300px;
-    margin: 20px;
-}
+    .result-header {
+        display: flex;
+        justify-content: space-between;
+        margin: auto;
+        width: 80%;
 
-.result-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-}
+        h1 {}
 
-.result-content {
-    padding: 20px;
+        .el-pagination {}
+    }
+
+    .result-list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+
+        .result-card {
+            width: 80%;
+            height: fit-content;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            background: #eeeeee;
+
+            ::v-deep .el-card__body {
+                display: flex;
+                flex-direction: row;
+            }
+
+            .el-image {
+                transition: all 0.4s;
+                cursor: pointer;
+                width: 200px;
+                min-width: 200px;
+                height: 300px;
+                max-height: 300px;
+                border-radius: 20px;
+
+                &:hover {
+                    transform: scale(1.1);
+                    filter: brightness(0.6);
+                }
+            }
+
+            .result-content {
+                height: 300px;
+                max-height: 300px;
+                position: relative;
+                margin-left: 20px;
+
+                .el-check-tag {
+                    margin: 10px 10px 10px 0;
+                }
+
+                p {
+                    overflow: auto;
+                    margin: 10px 0 10px 0;
+                    font-size: 16px;
+                    font-weight: bold;
+                    color: $blackColor1;
+                }
+
+                .el-button {
+                    position: absolute;
+                    bottom: 0;
+                    width: calc(100% - 10px);
+                    border-radius: 999px;
+                }
+            }
+        }
+    }
+
+    .err404 {
+        margin: auto;
+        width: 75vw;
+        height: 75vh;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+
+        img {
+            object-fit: scale-down;
+            margin-top: 10px;
+            border-radius: 20px;
+        }
+    }
 }
 </style>
