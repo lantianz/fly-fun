@@ -31,7 +31,7 @@ const avatar = ref(null)
 avatar.value = imgList[Math.floor(Math.random() * imgList.length)]
 const msg = ref("∑(っ°Д°;)っ别看了，我还没做这个 ┗( ▔, ▔ )┛ 刷新页面会换头像，当然，你可以点开瞅瞅")
 const changeMsg = () => {
-    msg.value = "没想到吧！它可能还变"
+    msg.value = "它可能还变"
 }
 </script>
 

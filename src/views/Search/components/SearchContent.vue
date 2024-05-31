@@ -154,10 +154,6 @@ const goToAnime = (url) => router.push({ path: '/Anime', query: { url: url } })
         justify-content: space-between;
         margin: auto;
         width: 80%;
-
-        h1 {}
-
-        .el-pagination {}
     }
 
     .result-list {
