@@ -96,13 +96,11 @@ const destroy = () => {
 defineExpose({ init, destroy })
 
 onMounted(() => {
-    // init()
     clientWidth.value = document.body.clientWidth
     clientHeight.value = document.body.clientHeight
     window.addEventListener('resize', () => {
         clientWidth.value = document.body.clientWidth
         clientHeight.value = document.body.clientHeight
-        // init()
     }, false)
 })
 

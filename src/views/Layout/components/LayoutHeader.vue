@@ -1,24 +1,33 @@
 <script setup>
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { useScroll } from '@vueuse/core'
 import { useHomeStore } from '@/stores/home';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
+import { useSearchStore } from '@/stores/search';
+import { useSiftStore } from '@/stores/sift';
+const siftStore = useSiftStore();
+const searchStore = useSearchStore();
 const homeStore = useHomeStore()
 const { tagObj } = storeToRefs(homeStore)
 
-const { y } = useScroll(window) 
+const { y } = useScroll(window)
 
 const router = useRouter()
-const open = (url) => router.push({ path: '/More/', query: { url: url } })
+const open = (url) => {
+    router.push({ path: '/More/', query: { id: url } })
+    siftStore.getSiftByID(url)
+}
+
 // 搜索
-const form = ref({
+const form = reactive({
     keyword: '',
     page: 1,    //搜索结果从第一页开始
 });
 const onSubmit = () => {
-    if (form.value.keyword.trim() === '') return;
-    router.push({ path: '/Search', query: form.value })
+    if (form.keyword.trim() === '') return;
+    router.push({ path: '/Search', query: form })
+    searchStore.getSearchByKeyword(form.keyword)
 };
 // logo刷新
 const refresh = () => location.replace('/');
@@ -29,9 +38,10 @@ const imgList = [
 ]
 const avatar = ref(null)
 avatar.value = imgList[Math.floor(Math.random() * imgList.length)]
-const msg = ref("∑(っ°Д°;)っ别看了，我还没做这个 ┗( ▔, ▔ )┛ 刷新页面会换头像，当然，你可以点开瞅瞅")
+const msg = ref("还没做这个 ┗( ▔, ▔ )┛ 刷新页面会换头像，当然，你可以点开瞅瞅")
 const changeMsg = () => {
     msg.value = "它可能还变"
+    avatar.value = imgList[Math.floor(Math.random() * imgList.length)]
 }
 </script>
 
@@ -61,8 +71,7 @@ const changeMsg = () => {
             <!-- <div class="history">
                 <RouterLink to="/history"><i class="iconfont icon-lishi"></i></RouterLink>
             </div> -->
-            <el-popover placement="top-start" :width="250" trigger="hover"
-                :content="msg">
+            <el-popover placement="top-start" :width="250" trigger="hover" :content="msg">
                 <template #reference>
                     <div class="avatar" @click="changeMsg">
                         <el-image :src="avatar" :zoom-rate="1.2" :max-scale="3" :min-scale="0.2"

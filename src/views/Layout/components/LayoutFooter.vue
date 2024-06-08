@@ -30,10 +30,12 @@
     padding-top: 20px;
   
     .extra {
+      width: 100%;
       background-color: #333;
     }
   
     .slogan {
+      width: 100%;
       height: 90px;
       padding-top: 10px;
       border-bottom: 1px solid #434343;
@@ -61,6 +63,7 @@
     }
   
     .copyright {
+      width: 100%;
       height: 120px;
       padding-top: 40px;
       text-align: center;

@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // 创建axios实例
 const http = axios.create({
-  baseURL: 'http://111.67.201.175:8082/api',
+  baseURL: import.meta.env.VITE_BASE_URL,
   timeout: 100000
 })
 

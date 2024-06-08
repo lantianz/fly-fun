@@ -49,7 +49,7 @@ export const useHomeStore = defineStore(
   },
   {
     persist: {
-      paths: ["tagObj", "week"],
+      paths: ["tagObj"],
     },
   }
 );

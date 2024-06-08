@@ -3,6 +3,8 @@ import BasePageHandle from '@/components/BasePageHandle.vue';
 import BaseAnimeItem from '@/components/BaseAnimeItem.vue';
 import { onMounted, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router'
+import { useSiftStore } from '@/stores/sift';
+const siftStore = useSiftStore();
 const { lineNum, lineCount, animeObj, clickEvent } = defineProps([ 'lineNum', 'lineCount', 'animeObj', 'clickEvent'])
 
 
@@ -15,8 +17,8 @@ const init = () => watchEffect(() => {
 
 const router = useRouter()
 const getMore = (url) => {
-    router.push({ path: '/More' + url })
-    console.log("获取更多:", url)
+    router.push({ path: '/More/', query: { id: url } })
+    siftStore.getSiftByID(url)
 }
 
 onMounted(() => {

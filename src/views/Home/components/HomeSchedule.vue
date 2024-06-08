@@ -28,7 +28,9 @@ const initAObj = () => {
     }
 }
 // 初始化获得今日的数据 --> 子组件BasePageHandle
-initAObj()
+watchEffect(() => {
+    initAObj()
+})
 
 const sonRef = ref(null)
 const animes = ref([])

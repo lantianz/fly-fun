@@ -10,29 +10,26 @@ export const usePlayStore = defineStore(
     const url = reactive({}); //请求参数必须是对象
     url.url = route.query.url;
 
-    // const result = ref([]);
     const urls = ref([]);
     const dramasList = ref({});
-
-    // const process = () => {
-    //   urls.value = result.value.urls;
-    //   dramasList.value = result.value.dramasList;
-    // };
 
     const getPlay = async () => {
       const res = await getPlayAPI(url);
       urls.value = res.data.urls;
       dramasList.value = res.data.dramasList;
-      // result.value.urls = res.data.urls
-      // result.value.dramasList = res.data.dramasList
-      // process();
+    };
+    const getPlayByUrl = async (val) => {
+      const res = await getPlayAPI(val);
+      urls.value = res.data.urls;
+      dramasList.value = res.data.dramasList;
     };
 
     return {
       urls,
       dramasList,
       getPlay,
+      getPlayByUrl,
     };
   },
-  { persist: true }
+  { persist: false }
 );

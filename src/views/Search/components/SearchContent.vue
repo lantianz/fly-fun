@@ -74,7 +74,7 @@ const goToAnime = (url) => router.push({ path: '/Anime', query: { url: url } })
                     </template>
                 </el-image>
                 <div class="result-content">
-                    <h1>{{ item.title }}</h1>
+                    <h1 @click="goToAnime(item.url)">{{ item.title }}</h1>
                     <ul>
                         <el-check-tag size="small" checked round>{{ item.topLeftTag }}</el-check-tag>
                         <el-check-tag size="small" checked round>{{ item.episodesTag }}</el-check-tag>
@@ -194,6 +194,15 @@ const goToAnime = (url) => router.push({ path: '/Anime', query: { url: url } })
                 max-height: 300px;
                 position: relative;
                 margin-left: 20px;
+
+                h1 {
+                    cursor: pointer;
+
+                    &:hover {
+                        transition: 0.3s;
+                        color: $xtxColor;
+                    }
+                }
 
                 .el-check-tag {
                     margin: 10px 10px 10px 0;

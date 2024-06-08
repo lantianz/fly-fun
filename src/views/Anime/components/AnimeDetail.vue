@@ -1,7 +1,6 @@
 <script setup>
 import { ref, watchEffect } from "vue";
-// import { useRouter } from 'vue-router'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useAnimeStore } from "@/stores/anime";
 import { storeToRefs } from "pinia";
 
@@ -15,15 +14,15 @@ const getList = (tab) => {
     activeTab.value = tab.listTitle
 }
 
-// const router = useRouter()
+const router = useRouter()
 const route = useRoute()
 const from = ref(null)
 watchEffect(() => {
     from.value = route.query.url
 })
 const goToPlay = (url) => {
-    location.href = ('/Play'+'?url='+url+'&'+'from='+from.value)
-    }
+    router.push({ name: 'Play', query: { url: url, from: from.value } })
+}
 </script>
 <template>
     <div class="anime-detail">
@@ -35,10 +34,8 @@ const goToPlay = (url) => {
                     <li>{{ anime.score }}</li>
                     <li>{{ anime.updateTime }}</li>
                     <li>标签:
-                        <el-link :underline="false" :href="anime.tagUrls[i]"
-                            v-for="(tag, i) in anime.tagTitles" :key="anime.tagUrls[i]">
-                            <el-check-tag style="margin: 8px;" size="small" checked round>{{ tag }}</el-check-tag>
-                        </el-link>
+                        <el-check-tag v-for="(tag, i) in anime.tagTitles" :key="anime.tagUrls[i]" style="margin: 8px;"
+                            size="small" checked round>{{ tag }}</el-check-tag>
                     </li>
                 </ul>
                 <el-button type="primary" round

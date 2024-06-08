@@ -2,16 +2,17 @@
 import BaseArtPlayer from '@/components/BaseArtPlayer.vue';
 import { useRoute } from 'vue-router';
 import { onMounted, reactive, ref, toRefs, watch, watchEffect } from 'vue';
-
+import { usePlayStore } from '@/stores/play';
+const playStore = usePlayStore();
 // 响应式数据
-const props = defineProps(['urls', 'dramasList'])
-const { urls, dramasList } = toRefs(props)
+const props = defineProps(['url', 'dramasList'])
+const { url, dramasList } = toRefs(props)
 
 const route = useRoute();
 const defaultConfigs = reactive({
   container: 'artplayer',
   id: route.query.url,
-  url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', //'https://sf1-cdn-tos.huoshanstatic.com/obj/media-fe/xgplayer_doc_video/mp4/xgplayer-demo-360p.mp4'
+  url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
   poster: 'src/assets/images/poster.png',
   autoplay: false,
   volume: 1,
@@ -23,28 +24,34 @@ const initPlayer = () => playerRef.value.init()
 const destroyPlayer = () => playerRef.value.destroy()
 
 watchEffect(() => {
-  defaultConfigs.url = urls.value
+  defaultConfigs.url = url.value
 })
 
-watch(() => urls.value, () => {
+watch(() => url.value, () => {
   if (playerRef.value) {
     destroyPlayer()
-    initPlayer()
     getActiveTab()
+    initPlayer()
   }
 })
 onMounted(() => {
-  initPlayer()
   getActiveTab()
+  initPlayer()
 })
 
 const getActiveTab = () => {
-  dramasList.value.forEach(element => {
-    if (element.selected) {
-      getList(element)
-      activeTab.value = element.listTitle
+  for (let key in dramasList.value) {
+    if (dramasList.value[key].selected) {
+      getList(dramasList.value[key])
+      activeTab.value = dramasList.value[key].listTitle
     }
-  })
+  }
+  // dramasList.value.forEach(element => {
+  //   if (element.selected) {
+  //     getList(element)
+  //     activeTab.value = element.listTitle
+  //   }
+  // })
 }
 const tabList = ref([])
 const activeTab = ref([])
@@ -57,7 +64,9 @@ const reverse = () => {
   tabList.value.reverse()
 }
 
-const goToPlay = (url) => location.href = '/Play' + '?url=' + url
+const goToPlay = (url) => {
+  playStore.getPlayByUrl({ url: url })
+}
 </script>
 
 <template>
@@ -73,7 +82,8 @@ const goToPlay = (url) => location.href = '/Play' + '?url=' + url
           <h1>{{ dramasList[0].listInfo.title }}</h1>
           <h2 style="color: #999999;">{{ dramasList[0].listInfo.episode }}</h2>
           <ul>
-            <el-check-tag v-for="tag in dramasList[0].listInfo.tags" :key="tag" style="margin: 4px;" size="small" checked round>{{ tag }}</el-check-tag>
+            <el-check-tag v-for="tag in dramasList[0].listInfo.tags" :key="tag" style="margin: 4px;" size="small"
+              checked round>{{ tag }}</el-check-tag>
           </ul>
         </div>
         <div class="episodes">

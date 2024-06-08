@@ -24,9 +24,9 @@ const changeCarousel = (index) => {
 
 <template>
     <div class="home-banner">
-        <el-carousel arrow="never" :interval="4000" type="card" height="calc(100vh - 90px)" @change="changeCarousel">
+        <el-carousel arrow="never" :interval="4000" type="card" height="calc(100vw * 0.75 * 0.5)" @change="changeCarousel">
             <el-carousel-item v-for="(item, index) in homeStore.bannerObj.items" :key="item" @click="goToAnime(index, item.url)">
-                <el-image class="banner-img" :src="item.img" lazy>
+                <el-image class="banner-img" :src="item.img">
                     <template #placeholder>
                         <div class="load">
                             <div class="loader"></div>
@@ -87,10 +87,6 @@ const changeCarousel = (index) => {
                 font-weight: 700;
             }
         }
-
-        // ::v-deep .el-carousel__indicators--horizontal {
-        //     left: calc(75% / 2 + 50% / 2);
-        // }
     }
 
 }

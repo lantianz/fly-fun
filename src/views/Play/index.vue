@@ -1,12 +1,20 @@
 <script setup>
 import PlayPageTop from './components/PlayPageTop.vue';
 import { usePlayStore } from '@/stores/play';
-import { onMounted } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
+import { useRoute } from 'vue-router';
+const route = useRoute()
 
 const playStore = usePlayStore()
-const { getPlay } = playStore
+const { getPlayByUrl } = playStore
 
-getPlay()
+const show = ref(false)
+getPlayByUrl({ url: route.query.url })
+watchEffect(() => {
+  if (playStore.urls[0]) {
+    show.value = true
+  }
+})
 
 onMounted(() => {
   scrollTo(0, 0)
@@ -15,7 +23,7 @@ onMounted(() => {
 
 <template>
   <div class="play" v-if="playStore.urls">
-    <PlayPageTop :urls="playStore.urls[0]" :dramasList="playStore.dramasList" />
+    <PlayPageTop :url="playStore.urls[0]" :dramasList="playStore.dramasList" v-if="show" />
   </div>
 </template>
 

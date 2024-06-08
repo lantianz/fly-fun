@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  // history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
@@ -21,7 +20,7 @@ const router = createRouter({
         {
           path: "More",
           name: "More",
-          component: () => import("@/views/More/index.vue"), //waiting
+          component: () => import("@/views/More/index.vue"), 
         },
         {
           path: "Play",
@@ -31,7 +30,7 @@ const router = createRouter({
         {
           path: "Search",
           name: "Search",
-          component: () => import("@/views/Search/index.vue"), //doing
+          component: () => import("@/views/Search/index.vue"), 
         },
       ],
     },
