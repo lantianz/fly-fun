@@ -1,6 +1,6 @@
 <script setup>
 import BaseArtPlayer from '@/components/BaseArtPlayer.vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { onMounted, reactive, ref, toRefs, watch, watchEffect } from 'vue';
 import { usePlayStore } from '@/stores/play';
 const playStore = usePlayStore();
@@ -25,6 +25,7 @@ const destroyPlayer = () => playerRef.value.destroy()
 
 watchEffect(() => {
   defaultConfigs.url = url.value
+    document.title = '《' + dramasList.value[0].listInfo.title + '》'+dramasList.value[0].listInfo.episode + '-FlyFun'
 })
 
 watch(() => url.value, () => {
@@ -46,12 +47,6 @@ const getActiveTab = () => {
       activeTab.value = dramasList.value[key].listTitle
     }
   }
-  // dramasList.value.forEach(element => {
-  //   if (element.selected) {
-  //     getList(element)
-  //     activeTab.value = element.listTitle
-  //   }
-  // })
 }
 const tabList = ref([])
 const activeTab = ref([])
@@ -64,7 +59,9 @@ const reverse = () => {
   tabList.value.reverse()
 }
 
+const router = useRouter()
 const goToPlay = (url) => {
+  router.push({ name: 'Play', query: { url: url, from: null } })
   playStore.getPlayByUrl({ url: url })
 }
 </script>

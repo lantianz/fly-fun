@@ -9,6 +9,7 @@ const imgList = ref([
 
 const img = ref({ src: "https://img.moehu.org/pic.php?id=longtu", alt: "404" });
 onMounted(() => {
+    document.title = '404-FlyFun'
     img.value = imgList.value[Math.floor(Math.random() * imgList.value.length)];
 });
 </script>
@@ -45,6 +46,7 @@ onMounted(() => {
         display: inline-block;
         border-radius: 38px
     }
+
     img {
         margin-top: 10px;
         border-radius: 20px;

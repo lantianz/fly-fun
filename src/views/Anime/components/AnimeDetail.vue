@@ -14,14 +14,25 @@ const getList = (tab) => {
     activeTab.value = tab.listTitle
 }
 
+const initTabList = () => {
+    anime.value.dramasList ? getList(anime.value.dramasList[0]) : null
+}
+
 const router = useRouter()
 const route = useRoute()
 const from = ref(null)
 watchEffect(() => {
     from.value = route.query.url
+    document.title = '《' + anime.value.title + '》' + '-FlyFun'
+    initTabList()
 })
+
 const goToPlay = (url) => {
     router.push({ name: 'Play', query: { url: url, from: from.value } })
+}
+const show = ref(false)
+const showErr = () => {
+    anime.value.dramasList[0] ? goToPlay(anime.value.dramasList[0].dramasItemList[0].url) : show.value = true
 }
 </script>
 <template>
@@ -34,12 +45,14 @@ const goToPlay = (url) => {
                     <li>{{ anime.score }}</li>
                     <li>{{ anime.updateTime }}</li>
                     <li>标签:
-                        <el-check-tag v-for="(tag, i) in anime.tagTitles" :key="anime.tagUrls[i]" style="margin: 8px;"
-                            size="small" checked round>{{ tag }}</el-check-tag>
+                        <div class="tag">
+                            <el-check-tag v-for="(tag, i) in anime.tagTitles" :key="anime.tagUrls[i]"
+                                style="margin: 8px;" size="small" checked round>{{ tag }}</el-check-tag>
+                        </div>
                     </li>
                 </ul>
-                <el-button type="primary" round
-                    @click="goToPlay(anime.dramasList[0].dramasItemList[0].url)">立即播放</el-button>
+                <h3 v-if="show">暂无资源</h3>
+                <el-button type="primary" round @click="showErr">立即播放</el-button>
             </div>
         </div>
         <!-- 剧情简介 -->
@@ -74,18 +87,24 @@ const goToPlay = (url) => {
 
 
     .header {
+        background-color: #dddfdd;
+        border-radius: 12px;
+        padding: 30px;
+        width: 100%;
+        height: calc(20vw * 4 / 3);
         display: flex;
         gap: 20px;
 
 
         .anime-poster {
             width: 25%;
-            height: auto;
+            height: 100%;
             border-radius: 10px;
         }
 
         .anime-info {
             width: 75%;
+            height: 100%;
             display: flex;
             flex-direction: column;
 
@@ -102,7 +121,18 @@ const goToPlay = (url) => {
 
                 li {
                     margin-bottom: 5px;
+
+                    .tag {
+                        overflow: auto;
+                        max-height: calc(20vw * 3 / 7);
+                    }
                 }
+            }
+
+            .el-button {
+                width: 50%;
+                margin: 0 auto;
+                margin-top: auto;
             }
         }
 

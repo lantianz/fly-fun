@@ -8,6 +8,7 @@ const homeStore = useHomeStore()
 const { getIndex, getWeek } = homeStore
 getIndex()
 getWeek()
+document.title = '首页-FlyFun'
 
 </script>
 
@@ -17,7 +18,12 @@ getWeek()
     <HomeSchedule v-if="homeStore.week" />
     <HomeAnimes />
   </div>
-  <el-backtop :right="100" :bottom="100" />
+  <el-backtop style="
+  --el-backtop-bg-color: var(--el-color-primary);
+  --el-backtop-text-color: var(--el-bg-color-overlay);
+  --el-backtop-hover-bg-color: #000;" 
+  :right="100" 
+  :bottom="100" />
 </template>
 
 <style scoped lang="scss">

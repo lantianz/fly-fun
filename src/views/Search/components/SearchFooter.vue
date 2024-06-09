@@ -10,7 +10,7 @@
           <!-- 版权信息 -->
           <div class="copyright">
             <p style="margin-bottom: 10px;">
-              <a href="javascript:;">关于我（meiyou）</a>
+              <a href="https://github.com/lantianz" target="_blank">关于我</a>
               <a href="javascript:;">友情链接（meiyou）</a>
             </p>
             <p style="padding-bottom: 20px;">CopyRight © 2024 FlyFun</p>
@@ -65,6 +65,10 @@
   
         &:last-child {
           border-right: none;
+        }
+
+        &:hover {
+          color: $xtxColor;;
         }
       }
     }

@@ -17,7 +17,8 @@ const init = () => watchEffect(() => {
 
 const router = useRouter()
 const getMore = (url) => {
-    router.push({ path: '/More/', query: { id: url } })
+    siftStore.siftOptions.id = url
+    router.push({ path: '/More/', query: siftStore.siftOptions })
     siftStore.getSiftByID(url)
 }
 

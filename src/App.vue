@@ -1,5 +1,13 @@
 <script setup>
+import { watchEffect } from "vue";
+import { useWindowSize } from "@vueuse/core";
+import { useRouter } from "vue-router";
+const { width } = useWindowSize();
+const router = useRouter();
 
+watchEffect(() => {
+  width.value < 768 ? router.push({ path: '/mobile' }) : null
+});
 </script>
 
 <template>

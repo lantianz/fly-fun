@@ -13,11 +13,12 @@ const getTitle = computed(() => {
       t.value = obj.title
     }
   });
+  document.title = t.value + '-FlyFun'
   return t.value
 })
 
 const siftStore = useSiftStore();
-siftStore.getSift();
+// siftStore.getSift();
 const { pageCount, vodDataBean, classificationDataBeans } = storeToRefs(siftStore);
 
 const show = reactive({
@@ -37,6 +38,7 @@ const showSift = () => {
 const reset = () => {
   for (let i = 0; i < 6; i++) {
     activeTab.value[i] = '全部'
+    siftStore.siftOptions.id = route.query.id
     siftStore.siftOptions.type = ''
     siftStore.siftOptions.area = ''
     siftStore.siftOptions.year = ''
@@ -123,7 +125,12 @@ onMounted(() => {
       <BaseAnimeItem v-for="anime in vodDataBean.itemList" :key="anime" :anime="anime" :click-event="goToAnime" />
     </div>
   </div>
-  <el-backtop :right="100" :bottom="100" />
+  <el-backtop style="
+  --el-backtop-bg-color: var(--el-color-primary);
+  --el-backtop-text-color: var(--el-bg-color-overlay);
+  --el-backtop-hover-bg-color: #000;" 
+  :right="100" 
+  :bottom="100" />
 </template>
 
 <style scoped lang="scss">

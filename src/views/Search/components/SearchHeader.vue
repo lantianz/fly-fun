@@ -32,11 +32,6 @@ const imgList = [
 ]
 const avatar = ref(null)
 avatar.value = imgList[Math.floor(Math.random() * imgList.length)]
-const msg = ref("∑(っ°Д°;)っ别看了，我还没做这个 ┗( ▔, ▔ )┛ 刷新页面会换头像，当然，你可以点开瞅瞅")
-const changeMsg = () => {
-    msg.value = "没想到吧！它可能还变"
-    avatar.value = imgList[Math.floor(Math.random() * imgList.length)]
-}
 </script>
 <template>
     <header class="app-header" :class="{ show: y > 90 }">
@@ -52,15 +47,10 @@ const changeMsg = () => {
             <div class="now-time">
                 <span>{{ nowTime }}</span>
             </div>
-            <el-popover placement="top-start" :width="250" trigger="hover" :content="msg">
-                <template #reference>
-                    <div class="avatar" @click="changeMsg">
-                        <el-image :src="avatar" :zoom-rate="1.2" :max-scale="3" :min-scale="0.2"
-                            :preview-src-list="imgList" :initial-index="Math.floor(Math.random() * imgList.length)"
-                            fit="cover" />
-                    </div>
-                </template>
-            </el-popover>
+            <div class="avatar">
+                <el-image :src="avatar" :zoom-rate="1.2" :max-scale="3" :min-scale="0.2" :preview-src-list="imgList"
+                    :initial-index="Math.floor(Math.random() * imgList.length)" fit="cover" />
+            </div>
         </div>
     </header>
 </template>

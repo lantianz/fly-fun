@@ -1,4 +1,4 @@
-import { reactive, ref, watchEffect } from "vue";
+import { reactive, ref } from "vue";
 import { defineStore } from "pinia";
 import { getSiftAPI } from "@/apis/sift";
 import { useRoute } from "vue-router";
@@ -17,14 +17,17 @@ export const useSiftStore = defineStore(
       page: "",
     });
     const route = useRoute();
-    siftOptions.id = route.query.id ? route.query.id : "";
-    siftOptions.type = route.query.type ? route.query.type : "";
-    siftOptions.area = route.query.area ? route.query.area : "";
-    siftOptions.year = route.query.year ? route.query.year : "";
-    siftOptions.lang = route.query.lang ? route.query.lang : "";
-    siftOptions.latter = route.query.latter ? route.query.latter : "";
-    siftOptions.by = route.query.by ? route.query.by : "";
-    siftOptions.page = route.query.page ? route.query.page : "";
+    const initSift = () => {
+      siftOptions.id = route.query.id ? route.query.id : "";
+      siftOptions.type = route.query.type ? route.query.type : "";
+      siftOptions.area = route.query.area ? route.query.area : "";
+      siftOptions.year = route.query.year ? route.query.year : "";
+      siftOptions.lang = route.query.lang ? route.query.lang : "";
+      siftOptions.latter = route.query.latter ? route.query.latter : "";
+      siftOptions.by = route.query.by ? route.query.by : "";
+      siftOptions.page = route.query.page ? route.query.page : "";
+    };
+    initSift();
 
     const pageCount = ref(0);
     const vodDataBean = reactive({

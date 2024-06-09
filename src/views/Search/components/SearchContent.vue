@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref, toRefs } from 'vue';
+import { onMounted, reactive, ref, toRefs, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import { useRoute } from 'vue-router';
 import { useSearchStore } from '@/stores/search';
@@ -18,7 +18,6 @@ const form = reactive({
 form.keyword = route.query.keyword
 const onSubmit = () => {
     if (form.keyword != null && form.keyword.trim() !== '') {
-        // location.href = '/Search' + '?keyword=' + form.keyword + '&page=' + form.page
         router.push({ path: '/Search', query: { keyword: form.keyword, page: 1 } })
         searchStore.getSearchByKeyword(form.keyword)
     }
@@ -28,6 +27,10 @@ const changePage = (val) => {
     router.push({ path: '/Search', query: { keyword: form.keyword, page: form.page } })
     searchStore.getSearchByPage(val)
 }
+
+watchEffect(() => {
+    document.title = '搜索'+route.query.keyword+'-FlyFun'
+})
 
 const imgList = ref([
     { src: "https://img.moehu.org/pic.php?id=longtu", alt: "404" },
@@ -157,13 +160,13 @@ const goToAnime = (url) => router.push({ path: '/Anime', query: { url: url } })
     }
 
     .result-list {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        justify-items: center;
         width: 100%;
 
         .result-card {
-            width: 80%;
+            width: 90%;
             height: fit-content;
             margin-bottom: 20px;
             border-radius: 12px;
@@ -209,6 +212,7 @@ const goToAnime = (url) => router.push({ path: '/Anime', query: { url: url } })
                 }
 
                 p {
+                    max-height: 135px;
                     overflow: auto;
                     margin: 10px 0 10px 0;
                     font-size: 16px;

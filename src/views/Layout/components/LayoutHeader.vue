@@ -1,11 +1,13 @@
 <script setup>
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useScroll } from '@vueuse/core'
 import { useHomeStore } from '@/stores/home';
 import { storeToRefs } from 'pinia';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useSearchStore } from '@/stores/search';
 import { useSiftStore } from '@/stores/sift';
+import { usePlayStore } from '@/stores/play';
+const playStore = usePlayStore();
 const siftStore = useSiftStore();
 const searchStore = useSearchStore();
 const homeStore = useHomeStore()
@@ -13,9 +15,21 @@ const { tagObj } = storeToRefs(homeStore)
 
 const { y } = useScroll(window)
 
+const route = useRoute()
+const getTitle = computed(() => {
+    const t = ref('');
+    homeStore.tagObj.tags.forEach(obj => {
+        if (obj.url === route.query.id) {
+            t.value = obj.title
+        }
+    });
+    return t.value
+})
+
 const router = useRouter()
 const open = (url) => {
-    router.push({ path: '/More/', query: { id: url } })
+    siftStore.siftOptions.id = url
+    router.push({ path: '/More/', query: siftStore.siftOptions })
     siftStore.getSiftByID(url)
 }
 
@@ -29,6 +43,32 @@ const onSubmit = () => {
     router.push({ path: '/Search', query: form })
     searchStore.getSearchByKeyword(form.keyword)
 };
+
+// 历史
+const cleanHistory = () => {
+    if (!localStorage.getItem('artplayer_settings')) return
+    else localStorage.removeItem('artplayer_settings')
+    history.splice(0)
+}
+const history = reactive([])
+const getHistory = async () => {
+    if (!localStorage.getItem('artplayer_settings')) return
+    const historyObj = JSON.parse(localStorage.getItem('artplayer_settings'))
+    history.splice(0)
+    for (let key in historyObj.times) {
+        await playStore.getPlayByUrl({ url: key })
+        history.push({
+            url: key,
+            title: playStore.dramasList[0].listInfo.title,
+            episode: playStore.dramasList[0].listInfo.episode,
+        })
+    }
+    history.reverse()
+}
+const goToPlay = (url) => {
+    router.push({ name: 'Play', query: { url: url, from: null } })
+}
+
 // logo刷新
 const refresh = () => location.replace('/');
 
@@ -38,11 +78,6 @@ const imgList = [
 ]
 const avatar = ref(null)
 avatar.value = imgList[Math.floor(Math.random() * imgList.length)]
-const msg = ref("还没做这个 ┗( ▔, ▔ )┛ 刷新页面会换头像，当然，你可以点开瞅瞅")
-const changeMsg = () => {
-    msg.value = "它可能还变"
-    avatar.value = imgList[Math.floor(Math.random() * imgList.length)]
-}
 </script>
 
 <template>
@@ -56,7 +91,7 @@ const changeMsg = () => {
                     <RouterLink to="/"><i class="iconfont icon-dianshi"></i>&nbsp;首页</RouterLink>
                 </li>
                 <li v-for="tag in tagObj.tags" :key="tag" @click="open(tag.url)">
-                    <a>{{ tag.title }}</a>
+                    <a :class="{ active: getTitle === tag.title }">{{ tag.title }}</a>
                 </li>
             </ul>
             <div class="search">
@@ -68,18 +103,30 @@ const changeMsg = () => {
                     </el-form-item>
                 </el-form>
             </div>
-            <!-- <div class="history">
-                <RouterLink to="/history"><i class="iconfont icon-lishi"></i></RouterLink>
-            </div> -->
-            <el-popover placement="top-start" :width="250" trigger="hover" :content="msg">
-                <template #reference>
-                    <div class="avatar" @click="changeMsg">
-                        <el-image :src="avatar" :zoom-rate="1.2" :max-scale="3" :min-scale="0.2"
-                            :preview-src-list="imgList" :initial-index="Math.floor(Math.random() * imgList.length)"
-                            fit="cover" />
-                    </div>
-                </template>
-            </el-popover>
+            <div v-show="route.path !== '/Play'" class="history">
+                <el-popover placement="bottom" :width="500" trigger="click">
+                    <template #reference>
+                        <i class="iconfont icon-lishi" @click="getHistory"></i>
+                    </template>
+                    <h2 style="margin: 0;">播放记录<el-button style="float: right;" round type="info" size="small" @click="cleanHistory">清空记录</el-button></h2>
+                    <ul style="margin-top: 20px;">
+                        <li style="
+                        padding: 5px;
+                        border-radius: 5px;
+                        background-color: #dddddd;
+                        margin-top: 10px;
+                        cursor: pointer;" 
+                        v-for="item in history" :key="item" @click="goToPlay(item.url)">
+                            <a>{{ item.title }}</a>
+                            <a style="float: right;">{{ item.episode }}</a>
+                        </li>
+                    </ul>
+                </el-popover>
+            </div>
+            <div class="avatar">
+                <el-image :src="avatar" :zoom-rate="1.2" :max-scale="3" :min-scale="0.2" :preview-src-list="imgList"
+                    :initial-index="Math.floor(Math.random() * imgList.length)" fit="cover" />
+            </div>
         </div>
     </header>
 </template>
@@ -159,6 +206,10 @@ const changeMsg = () => {
                 &:hover {
                     color: $xtxColor;
                 }
+
+                &.active {
+                    color: $xtxColor;
+                }
             }
 
             .active {
@@ -177,7 +228,8 @@ const changeMsg = () => {
             height: 40px;
 
             input {
-                width: 384px;
+                max-width: 360px;
+                min-width: 300px;
                 height: 100%;
                 padding-left: 12px;
                 border-radius: 40px;

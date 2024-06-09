@@ -24,7 +24,12 @@ onMounted(() => {
     <SearchContent :result="res" />
     <SearchFooter />
   </div>
-  <el-backtop :right="100" :bottom="100" />
+  <el-backtop style="
+  --el-backtop-bg-color: var(--el-color-primary);
+  --el-backtop-text-color: var(--el-bg-color-overlay);
+  --el-backtop-hover-bg-color: #000;" 
+  :right="100" 
+  :bottom="100" />
 </template>
 
 <style scoped lang="scss">

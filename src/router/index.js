@@ -35,6 +35,10 @@ const router = createRouter({
       ],
     },
     {
+      path: "/mobile",
+      component: () => import("@/views/mobile.vue"),
+    },
+    {
       path: "/:pathMatch(.*)*",
       component: () => import("@/views/404.vue"),
     },

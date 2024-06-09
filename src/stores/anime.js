@@ -16,7 +16,7 @@ export const useAnimeStore = defineStore(
     const recommendList = ref([]);
 
     const getAnime = async () => {
-      param.url = route.query.url != null? route.query.url : route.query.from
+      param.url = route.query.url != null ? route.query.url : route.query.from;
       const res = await getAnimeAPI(param);
       anime.value = res.data.detailsDataBean;
       recommendList.value = res.data.detailsDataBean.recommendList;
